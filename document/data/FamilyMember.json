@@ -1,0 +1,46 @@
+[
+    {
+        name: "Zhū Yuánzhāng",
+        BirthToDeath: "(21 October 1328 – 24 June 1398)",
+        avatar:"",
+        profiles: "Common name: Hongwu Emperor,Reign:23 January 1368 – 24 June 1398, Temple name: Taizu",
+        relationsType: "root",
+        relationsWith: "",
+    },
+
+    {
+        name: "Zhū Dì",
+        BirthToDeath: "(2 May 1360 – 12 August 1424)",
+        avatar:"",
+        profiles: "Common name: Yongle Emperor,Reign:17 July 1402 – 12 August 1424, Temple name: Tàizōng 太宗 and Chéngzǔ 成祖",
+        relationsType: "son",
+        relationsWith: "",
+    },
+
+    {
+        name: "Zhū Yǔnwén",
+        BirthToDeath: "(16 August 1378 – 29 May 1425)",
+        avatar:"",
+        profiles: "Common name: Jianwen Emperor,Reign: 30 June 1398 – 13 July 1402, Temple name: Huìzōng",
+        relationsType: "",
+        relationsWith: "",
+    },
+
+    {
+        name: "Zhū Gāochì",
+        BirthToDeath: "(5 December 1377 – 13 July 1402)",
+        avatar:"",
+        profiles: "Common name: Hongxi Emperor,Reign: 7 September 1424 – 29 May 1425, Temple name: Rénzōng 仁宗",
+        relationsType: "",
+        relationsWith: "",
+    },
+
+    {
+        name: "Zhū Zhānjī",
+        BirthToDeath: "(16 March 1399 – 31 January 1435)",
+        avatar:"",
+        profiles: "Common name: Xuande Emperor,Reign: 27 June 1425 – 31 January 1435, Temple name: Xuānzōng 宣宗",
+        relationsType: "",
+        relationsWith: "",
+    },
+]
