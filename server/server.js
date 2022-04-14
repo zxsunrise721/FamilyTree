@@ -7,7 +7,10 @@ const PORT = 8000;
 const app = express();
 
 const {uploadAvatar, uploadPhotos } = require('./handle/uploadHandle');     // test upload files
-const { createFamily, getFamilies, getMemberByFamily, } = require('./handle/handle');
+const { 
+    createFamily, getFamilies, 
+    getMemberByFamily, createFamilyMember, getMemberById,
+} = require('./handle/handle');
 
 app.get('/',(req,res)=>{
     console.log(`URL: ${req.url}`);
@@ -20,6 +23,7 @@ app.use(function(req, res, next){
 });
 app.use(morgan('tiny'));
 app.use(express.static('./server/assets'));
+app.use(express.static('public'));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(fileUpload({createParentPath: true}));
@@ -34,7 +38,9 @@ app.post('/upload-photos', uploadPhotos)
 
 app.get('/api/get-families-public', getFamilies)
 app.post('/api/family-create',createFamily)
-app.get('/api/get-family-members', getMemberByFamily)
+app.get('/api/get-family-members/:familyId', getMemberByFamily)
+app.get('/api/get-family-member/:memberId',getMemberById)
+app.post('/api/family-member-create',createFamilyMember)
 
 
 

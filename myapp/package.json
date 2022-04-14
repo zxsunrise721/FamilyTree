@@ -6,14 +6,14 @@
   "author": "Xi Zhu",
   "license": "MIT",
   "private": true,
-  "proxy": {
-    "/api/*":  {
-      "target": "http://127.0.0.1:8000"
-    }
-  },
-  "devDependencies": {
+  "proxy": "http://127.0.0.1:8000",
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/styles": "^4.11.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-icons": "^4.3.1",
     "react-router-dom": "6.3.0",
     "react-scripts": "5.0.0",
     "styled-components": "5.3.5"

@@ -59,4 +59,15 @@ module.exports = class Family extends DBPool{
         }catch(err){console.error(err);}
         return families;
     }
+
+    async updateBackgroundImage(familyId, imagePath){
+        if(!this.isConnected){await this.dbInstance();}
+        let family;
+        try{
+            let result = await this.familyColl.updateOne({_id:familyId}, {$set:{ backgroundImage: imagePath }});
+            console.log(result);
+            family = await this.getFamily(familyId);
+        }catch(err){console.error(err);}
+        return family;
+    }
 }
