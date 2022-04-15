@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js --ignore client",
+    "server": "nodemon server.js"
   },
   "devDependencies": {
     "body-parser": "^1.20.0",
