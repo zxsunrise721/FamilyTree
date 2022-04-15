@@ -1,28 +1,26 @@
 import styled from 'styled-components';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {useParams} from 'react-router-dom';
+import FamilyContext from '../../FamilyContext';
 
 const MemberProfile = () =>{
+    const context = useContext(FamilyContext);
+    console.log('context family: ',context.family);
     const {memberId} = useParams();
-    const [family, setFamily] = useState(null);
-    // const [profileImg, setProfileImg] = useState(null);
     const [member, setMember] = useState(null);
 
     useEffect(()=>{
-        let v = window.sessionStorage.getItem('family');
-        if(!!v){ setFamily(JSON.parse(v)); }
-        fetch(`/api/get-family-member/${memberId}`)
-            .then(res=>res.json())
-            .then(resp=>{
-                console.log(resp.data);
-                setMember(resp.data);
-            })
+        const fetchMember = async ()=>{
+            let resp = await context.request('GET',`/api/get-family-member/${memberId}`,null);
+            if(resp.status === 200){ setMember(resp.data); }
+        }
+        fetchMember();
     },[memberId])
 
     return (
         !!member &&
         <Wrapper>
-            <HeadIMG className="img" bgImg={!!family && family.backgroundImage!=='' ? family.backgroundImage : '/images/default/cloud.png'}/>
+            <HeadIMG className="img" bgImg={!!context.family && context.family.backgroundImage!=='' ? context.family.backgroundImage : '/images/default/cloud.png'}/>
             <MemberHeadDiv>
                 <MemberHead>
                     <div>

@@ -10,10 +10,8 @@ const createFamily = async (req, res, next) =>{
         // upload background-image file
         let img;
         if(!!req.files){
-            // use the name of the input field (i.e. "background-image") to retrieve the uploaded file 
-            img = req.files.backgroundImage;
-            // use the mv() method to place the file in upload directory (i.e. "uploads")
-            img.mv('./uploads/' + img.name);
+            img = req.files.backgroundImage;    // use the name of the input field (i.e. "background-image") to retrieve the uploaded file 
+            img.mv('./uploads/' + img.name);    // use the mv() method to place the file in upload directory (i.e. "uploads")
         }
         const process = new Family();
         await process.dbInstance();
@@ -93,8 +91,8 @@ const createFamilyMember = async (req, res) => {
                             birth: !!req.body.birth ? req.body.birth : '',
                             death: !!req.body.death ? req.body.death : '',
                             profile: !!req.body.profile ? req.body.profile : '',
-                            relationshipType: !!req.body.relationshipType ? req.body.relationshipType : '',
-                            relationshipWith: !!req.body.relationshipWith ? req.body.relationshipWith : '',}
+                            relationshipType: !!req.body.relationshipType ? req.body.relationshipType : null,
+                            relationshipWith: !!req.body.relationshipWith ? req.body.relationshipWith : null,};
         let img;
         if(!!req.files){
             img = req.files.avatar;
@@ -105,8 +103,8 @@ const createFamilyMember = async (req, res) => {
         await process.dbInstance();
         let member = await process.createFamilyMember(memberObj);
         if(!!img){
-            let saveTo = SAVEIMAGEPATH + member.familyId;
-            let imgpath = IMAGEPATH + member.familyId;
+            let saveTo = SAVEIMAGEPATH + member.familyId.toString();
+            let imgpath = IMAGEPATH + member.familyId.toString();
             imgname = `${member._id}`+img.name;
             fs.copyFileSync('./uploads/' + img.name, `${saveTo}/${imgname}`);
             let data = fs.readFileSync(`${saveTo}/${imgname}`);

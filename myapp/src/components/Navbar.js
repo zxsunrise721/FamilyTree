@@ -14,7 +14,7 @@ const Navbar = () =>{
 
     const handleClick = () =>{
         window.sessionStorage.removeItem('family');
-        window.location.reload();
+        window.location.href = '/';
     }
     return(
         <Wrapper>
@@ -28,6 +28,7 @@ const Navbar = () =>{
 
 const Wrapper = styled.div``;
 const Container = styled.div`
+    width:1200px;
     display: flex;
     flex-direction: row;
     padding: 1rem 2rem;
@@ -47,9 +48,10 @@ const Logo = styled(Link)`
 `;
 const FamilyContainer = styled.div`
     margin-left: 20px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-style: italic;
-    color: rgb(37, 83, 3);
+    font-weight: bold;
+    color: darkgreen; //rgb(37, 83, 3);
     cursor: pointer;
 `;
 

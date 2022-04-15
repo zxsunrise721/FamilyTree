@@ -11,6 +11,7 @@ const {
     createFamily, getFamilies, 
     getMemberByFamily, createFamilyMember, getMemberById,
 } = require('./handle/handle');
+const { getFamilyTree, createFamilyTree, }= require('./handle/handleFamilyTree');
 
 app.get('/',(req,res)=>{
     console.log(`URL: ${req.url}`);
@@ -42,7 +43,8 @@ app.get('/api/get-family-members/:familyId', getMemberByFamily)
 app.get('/api/get-family-member/:memberId',getMemberById)
 app.post('/api/family-member-create',createFamilyMember)
 
-
+app.get('/api/get-family-tree/:familyId', getFamilyTree)
+app.get('/api/create-family-tree/:familyId', createFamilyTree)
 
 
 /************************************************************************************************/
