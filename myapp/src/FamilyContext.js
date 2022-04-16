@@ -1,5 +1,6 @@
 import { createContext, useReducer } from 'react';
 import { DATASTATUS, USERSTATUS} from './constant';
+import { getCurrentFamily, getCurrentFamilyTree, } from './utilies/utilies';
 
 const initialState = { 
     families: [],
@@ -65,17 +66,19 @@ export const FamilyProvider = ({children}) =>{
 
     const setCurrentFamily = (family) =>{
         dispatch({type:'set-current-family', currentFamily: family});
+        window.sessionStorage.setItem('current-family', JSON.stringify(family) );
     }
 
     const clearCurrentFamily = () =>{
         dispatch({type:'clear-current-family'});
+        window.sessionStorage.removeItem('current-family');
     }
 
     const fetchMembers = async (isRefresh) =>{
         dispatch({type:'fetch-members'});
         if((!!isRefresh && state.membersDataStatus === DATASTATUS.LOADED)||(state.membersDataStatus === DATASTATUS.LOADING)){ 
-            let resp = await request('GET',`/api/get-family-members/${state.curFamily._id}`);
-            console.log(resp);
+            let currentFamily = !!state.curFamily ? state.curFamily : getCurrentFamily();
+            let resp = await request('GET',`/api/get-family-members/${currentFamily._id}`);
             if(resp.status===200){
                 !!resp.data && resp.data.length > 0 ?
                     dispatch({type:'fetched-members', data: resp.data}):
@@ -87,10 +90,12 @@ export const FamilyProvider = ({children}) =>{
     const fetchFamilyTree = async () =>{
         dispatch({type:'fetch-family-tree'});
         if(state.TreeDataStatus===DATASTATUS.LOADING){
-            let resp = await request('GET',`/api/get-family-tree/${state.curFamily._id}`);
-            resp.status === 200 ?
-                dispatch({type:'fetched-family-tree', tree: resp.data}):
-                dispatch({type:'error-family-tree', error:resp.message});
+            let currentFamily = !!state.curFamily ? state.curFamily : getCurrentFamily();
+            let resp = await request('GET',`/api/get-family-tree/${currentFamily._id}`);
+            if(resp.status === 200){ 
+                dispatch({type:'fetched-family-tree', tree: resp.data});
+                window.sessionStorage.setItem('family-tree', JSON.stringify(resp.data) );
+            }else{ dispatch({type:'error-family-tree', error:resp.message}); }
         }
     }
     

@@ -22,7 +22,7 @@ module.exports = class FamilyTree extends DBPool {
         let rootObj = {id: rootMember._id,
                         name: rootMember.memberName, 
                         avatar: rootMember.avatar,
-                        "birth-death": `${rootMember.birth}~${rootMember.death}`};
+                        years: `${rootMember.birth}~${rootMember.death}`};
 
         if(!!rootMember.couple){ rootObj = {...rootObj, couple : rootMember.couple};}
         if(!!rootMember.children){ rootObj = this.childrenTree(rootObj, rootMember.children); }
@@ -42,7 +42,7 @@ module.exports = class FamilyTree extends DBPool {
             let childObj = {id: child, 
                             name: childMember.memberName,
                             avatar: childMember.avatar,
-                            "birth-death": `${childMember.birth}~${childMember.death}`};
+                            years: `${childMember.birth}~${childMember.death}`};
             if(!!childMember.couple){childObj={...childObj, couple : childObj.couple }; }
             if(!!childMember.children){ childObj = this.childrenTree(childObj, childMember.children); }
             childrenArr.push({member: childObj});
