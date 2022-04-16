@@ -1,26 +1,15 @@
 import styled from 'styled-components';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import Button from '@material-ui/core/Button';
+import FamilyContext from '../../FamilyContext';
 
 const initialMember = {memberName:null, birth:null,death:null, profile:null, relationshipType:null, relationshipWith:null}
 const ProfileEdit = () =>{
-    const [family, setFamily] = useState(null);
+    const context = useContext(FamilyContext);
     const [profileImg, setProfileImg] = useState(null);
-    const [members, setMembers] = useState(null);
     const [member, setMember] = useState(initialMember);
-
-    useEffect(()=>{
-        let v = window.sessionStorage.getItem('family');
-        if(!!v){ v= JSON.parse(v); setFamily(v); }
-        fetch(`/api/get-family-members/${v._id}`)
-            .then(res=>res.json())
-            .then(resp=>{
-                let result = resp.data;
-                setMembers(result);
-            });
-    },[])
 
     const handleImageChange = (e) =>{
         e.preventDefault();
@@ -51,7 +40,7 @@ const ProfileEdit = () =>{
         e.preventDefault();
         let formData = new FormData();
         console.log(member);
-        formData.append('familyId',family._id);
+        formData.append('familyId',context.state.curFamily._id);
         formData.append('memberName', member.memberName);
         formData.append('avatar',profileImg);
         formData.append('birth', member.birth);
@@ -74,7 +63,7 @@ const ProfileEdit = () =>{
 
     return (
         <Wrapper>
-            <HeadIMG className="img" bgImg={!!family && family.backgroundImage!=='' ? family.backgroundImage : '/images/default/cloud.png'}/>
+            <HeadIMG className="img" bgImg={!!context.state.curFamily && context.state.curFamily.backgroundImage!=='' ? context.state.curFamily.backgroundImage : '/images/default/cloud.png'}/>
             <MemberHeadDiv>
                 <MemberHead>
                     <div>
@@ -118,7 +107,9 @@ const ProfileEdit = () =>{
                     <label>Relationship With:</label>
                     <select name="relationshipWith" id="relationshipWith" onChange={(ev)=>handleMemberChange('rsWith',ev)}>
                         <option value="#">-- Choose relationship with: --</option>
-                        {!!members && members.length>0 && members.map(member=>{
+                        {!!context.state.members && 
+                            context.state.members.length>0 && 
+                            context.state.members.map(member=>{
                             return <option value={member._id} key={member._id}>{member.memberName}</option>
                         })}
                     </select>

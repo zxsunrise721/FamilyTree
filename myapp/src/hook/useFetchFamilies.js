@@ -1,14 +1,16 @@
 import { useContext, useEffect } from 'react';
 import FamilyContext from '../FamilyContext';
+import { DATASTATUS } from '../constant';
 
 const useFetchFamilies = () =>{
     const context = useContext(FamilyContext);
     useEffect(()=>{
-        const fetchFamilies = async ()=>{
-            let resp = await context.request('GET','/api/get-families-public',null);
-            if(resp.status === 200){ context.setFamilies(resp.data); }
+        const fetchData = async ()=>{
+            if(context.state.FamiliesDataStatus!==DATASTATUS.LOADED){
+                await context.fetchFamilies();
+            }
         }
-        fetchFamilies();
+        fetchData();
     },[]);
 }
 

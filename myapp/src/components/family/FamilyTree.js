@@ -1,16 +1,14 @@
 import styled from 'styled-components';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import TreeNode from './TreeNode';
+import FamilyContext from '../../FamilyContext';
 
 const FamilyTree = () =>{
-    const [family, setFamily] = useState(null);
+    const context = useContext(FamilyContext);
     const [tree, setTree] = useState(null);
 
     useEffect(()=>{
-        let currentFamily = window.sessionStorage.getItem('family');
-        currentFamily = !!currentFamily ? JSON.parse(currentFamily) : null;
-        setFamily(currentFamily);
-        fetch(`/api/get-family-tree/${currentFamily._id}`)
+        fetch(`/api/get-family-tree/${context.state.curFamily._id}`)
             .then(res=>res.json())
             .then(resp=>{
                 setTree(resp.data);

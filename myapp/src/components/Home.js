@@ -7,14 +7,15 @@ import useFetchFamilies from '../hook/useFetchFamilies';
 const Home = () =>{
     const context = useContext(FamilyContext);
     useFetchFamilies();
+    // console.log(context.families.data);
     return(
         <Wrapper>
-            {!!context.families && context.families.length>0 && 
+            {!!context.state.families && context.state.families.length>0 && 
                 <ContainerDiv>
-                {context.families.map(family =>{
+                {context.state.families.map(family =>{
                     return(
                         <FamilyList key={family._id+'2'} to={'/members'} >
-                            <Button img={family.backgroundImage} onClick={()=>context.setFamily(family)}>
+                            <Button img={family.backgroundImage} onClick={()=>context.setCurrentFamily(family)}>
                             {family.familyName} Family 
                             </Button>
                         </FamilyList>

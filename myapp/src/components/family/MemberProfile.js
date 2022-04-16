@@ -20,7 +20,7 @@ const MemberProfile = () =>{
     return (
         !!member &&
         <Wrapper>
-            <HeadIMG className="img" bgImg={!!context.family && context.family.backgroundImage!=='' ? context.family.backgroundImage : '/images/default/cloud.png'}/>
+            <HeadIMG className="img" bgImg={!!context.state.curFamily && context.state.curFamily.backgroundImage!=='' ? context.state.curFamily.backgroundImage : '/images/default/cloud.png'}/>
             <MemberHeadDiv>
                 <MemberHead>
                     <div>

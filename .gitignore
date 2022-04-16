@@ -6,6 +6,10 @@
 /.pnp
 .pnp.js
 
+# public images
+/server/public/images
+/server/uploads
+
 # testing
 /myapp/coverage
 

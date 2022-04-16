@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import {Link} from 'react-router-dom';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -8,6 +8,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Switch from '@material-ui/core/Switch';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import FamilyContext from '../../FamilyContext';
 import useFetchFamilyMembers from '../../hook/useFetchFamilyMembers';
@@ -43,14 +44,24 @@ const StyledTableRow = withStyles((theme) => ({
 
 const FamilyList = () =>{
     const context = useContext(FamilyContext);
-    console.log('context family: ',context.family);
-    console.log('context families: ',context.families);
-    console.log('context members: ',context.members);
+    // console.log('context family: ',context.state.curFamily);
+    // console.log('context families: ',context.state.families);
+    // console.log('context members: ',context.state.members);
     const classes = useStyles();
-    useFetchFamilyMembers(context.family);
+    const [checked, setChecked] = useState(null);
+    useFetchFamilyMembers();
+    const toggleChecked = () =>{
+        setChecked((prev) => !prev);
+        if(checked){
+            window.location.href='/tree';
+        }
+    }
 
     return (
         <Wrapper>
+            {/* <Toolbar>
+                <Switch color="primary" checked={checked} onChange={toggleChecked} />
+            </Toolbar> */}
             <Paper className={classes.root}>
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
@@ -62,9 +73,9 @@ const FamilyList = () =>{
                     ))}
                     </TableRow>
                 </TableHead>
-                {!!context.members && context.members.length>0 && 
+                {!!context.state.members && context.state.members.length>0 && 
                 <TableBody>
-                    {context.members.map(member =>{
+                    {context.state.members.map(member =>{
                     return(
                         
                         <StyledTableRow key={member._id}>
@@ -88,6 +99,10 @@ const FamilyList = () =>{
 
 const Wrapper = styled.div`
     max-width: 1200px;
+`;
+const Toolbar = styled.div`
+    height:30px;
+    background-color:lightgrey;
 `;
 
 // const MemberDiv = styled.div``;
