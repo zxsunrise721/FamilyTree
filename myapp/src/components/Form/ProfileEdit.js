@@ -1,15 +1,29 @@
 import styled from 'styled-components';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 import FamilyContext from '../../FamilyContext';
+import { DEFAULT_EDIT_AVATAR } from '../../constant';
 
 const initialMember = {memberName:null, birth:null,death:null, profile:null, relationshipType:null, relationshipWith:null}
 const ProfileEdit = () =>{
     const context = useContext(FamilyContext);
+    const {memberId} = useParams();
     const [profileImg, setProfileImg] = useState(null);
     const [member, setMember] = useState(initialMember);
+
+    useEffect(()=>{
+        const fetchMember = async ()=>{
+            let resp = await context.request('GET',`/api/get-family-member/${memberId}`,null);
+            if(resp.status === 200){ setMember(resp.data); }
+        }
+        if(!!memberId){fetchMember();}
+    },[memberId])
+
 
     const handleImageChange = (e) =>{
         e.preventDefault();
@@ -63,56 +77,75 @@ const ProfileEdit = () =>{
 
     return (
         <Wrapper>
-            <HeadIMG className="img" bgImg={!!context.state.curFamily && context.state.curFamily.backgroundImage!=='' ? context.state.curFamily.backgroundImage : '/images/default/cloud.png'}/>
+            <HeadIMG className="img" bgImg={!!context.getCurrentFamily() && context.getCurrentFamily().backgroundImage!=='' ? context.getCurrentFamily().backgroundImage : '/images/default/cloud.png'}/>
             <MemberHeadDiv>
                 <MemberHead>
                     <div>
-                    <MemberIMG id='profile-image' src={!!profileImg ? profileImg.name :'/images/default/defaultAvatar.jpg'}/>
-                    <IconContainer>
-                    <Input accept="image/*" id="icon-button-file" type="file" onChange={(ev)=>handleImageChange(ev)}/>
-                    <label htmlFor="icon-button-file">
-                        <IconButton color="primary" aria-label="upload picture" component="span">
-                            <PhotoCamera fontSize='large'/>
-                        </IconButton>
-                    </label>
-                    </IconContainer>
+                        {!!!memberId ?
+                        <MemberIMG id='profile-image' src={!!profileImg ? profileImg.name : DEFAULT_EDIT_AVATAR}/>:
+                        <MemberIMG id='profile-image' src={!!member.avatar ? member.avatar : DEFAULT_EDIT_AVATAR}/>
+                        }
+                        <IconContainer>
+                        <Input accept="image/*" id="icon-button-file" type="file" onChange={(ev)=>handleImageChange(ev)}/>
+                        <label htmlFor="icon-button-file">
+                            <IconButton color="primary" aria-label="upload picture" component="span">
+                                <PhotoCamera fontSize='large'/>
+                            </IconButton>
+                        </label>
+                        </IconContainer>
                     </div>
                     <MemberName>
-                        <input type="text" name="memberName" placeholder="Enter member name" onChange={(ev)=>handleMemberChange('memberName',ev)}/>
+                        {!!!memberId ?
+                        <TextField required id="memberName" label="Enter member name (Required)" variant="filled" 
+                                    onChange={(ev)=>handleMemberChange('memberName',ev)} /> :
+                        <TextField required id="memberName" label="Enter member name (Required)" variant="filled"  defaultValue={member.memberName} 
+                                    onChange={(ev)=>handleMemberChange('memberName',ev)} />
+                        }
                     </MemberName>
-                    <Button variant="contained" color="primary" onClick={ev=>handleSubmit(ev)}>Save Member Profile</Button>
+                    <Button variant="contained" color="primary" onClick={ev=>handleSubmit(ev)}>{!!!memberId ? 'Save Member Profile' : 'Update Member Profile'}</Button>
                 </MemberHead>
             </MemberHeadDiv>
             <Form id='memberForm' enctype='multipart/form'>
             <MemberInfo>
                 <ProfileInfo>
                 <BDdiv>
-                    <label>Birth:</label><input type="date" name="birth" placeholder="Enter birth date" onChange={(ev)=>handleMemberChange('birth',ev)}/>
+                    {!!!memberId ?
+                        <TextField id="birth" label="Birth" type="date" InputLabelProps={{shrink: true,}} onChange={(ev)=>handleMemberChange('birth',ev)} /> :
+                        <TextField id="birth" label="Birth" type="date" value={member.birth} InputLabelProps={{shrink: true,}}  onChange={(ev)=>handleMemberChange('birth',ev)}/>
+                    }
                     <p> - </p>
-                    <label>Death:</label><input type="date" name="death" placeholder="Enter death date" onChange={(ev)=>handleMemberChange('death',ev)}/>
+                    {!!!memberId ?
+                        <TextField id="death" label="Death" type="date" InputLabelProps={{shrink: true,}} onChange={(ev)=>handleMemberChange('death',ev)} /> :
+                        <TextField id="death" label="Death" type="date" value={member.death} InputLabelProps={{shrink: true,}}  onChange={(ev)=>handleMemberChange('death',ev)}/>
+                    }
                 </BDdiv>
                 <ProfileDiv>
-                    <label>Profile:</label>
-                    <textarea id="profile" name="profile" rows="10" cols="50" placeholder="Enter profile" onChange={(ev)=>handleMemberChange('profile',ev)}/>
+                    {!!!memberId ?
+                    <TextField id="profile" label="Edit Member's Profile" multiline maxRows={10} placeholder="Enter profile" fullWidth={true}
+                                onChange={(ev)=>handleMemberChange('profile',ev)} /> :
+                    <TextField id="profile" label="Edit Member's Profile" multiline maxRows={10} value={member.profile} variant="filled" fullWidth={true}
+                                onChange={(ev)=>handleMemberChange('profile',ev)} />
+                    }
                 </ProfileDiv>
                 </ProfileInfo>
                 <MemberRelationship>
-                    <label>Relationship Type:</label>
-                    <select name="relationshipType" id="relationshipType" placeholder="choose relationship" onChange={(ev)=>handleMemberChange('rsType',ev)}>
-                        <option value="#">-- Choose relationship type: --</option>
-                        <option value="Root">Root</option>
-                        <option value="Child">Child</option>
-                        <option value="Couple">Couple</option>
-                    </select>
-                    <label>Relationship With:</label>
-                    <select name="relationshipWith" id="relationshipWith" onChange={(ev)=>handleMemberChange('rsWith',ev)}>
-                        <option value="#">-- Choose relationship with: --</option>
+                <TextField id="relationshipType" select label="type of relationship" variant="filled"
+                            value={!!memberId ? member.relationshipType : ''}
+                            onChange={(ev)=>handleMemberChange('rsType',ev)}>
+                        <MenuItem key={'Root'} value={'Root'}>Root</MenuItem>
+                        <MenuItem key={'Child'} value={'Child'}>Child</MenuItem>
+                        <MenuItem key={'Couple'} value={'Couple'}>Couple</MenuItem>
+                </TextField>
+                <TextField id="relationshipWith" select label="with Member" variant="filled"
+                            value={!!memberId ? member.relationshipWith : ''}
+                            onChange={(ev)=>handleMemberChange('rsWith',ev)}>
                         {!!context.state.members && 
                             context.state.members.length>0 && 
-                            context.state.members.map(member=>{
-                            return <option value={member._id} key={member._id}>{member.memberName}</option>
-                        })}
-                    </select>
+                            context.state.members.map(member=>(
+                                <MenuItem key={member._id} value={member._id}>{member.memberName}</MenuItem>
+                            ))}
+                </TextField>
+                    
                 </MemberRelationship>
             </MemberInfo>
             
@@ -194,7 +227,7 @@ const MemberInfo = styled.div`
 const Form = styled.div``;
 const ProfileInfo = styled.div`
     padding-left: 5px;
-    width: 60%;
+    width: 75%;
     font-size: 30px;
     font-weight: bold;
     border: 1px solid lightgrey;
@@ -225,7 +258,7 @@ const ProfileDiv = styled.div`
 const MemberRelationship = styled.div`
     margin-left: 5px;
     padding-left: 10px;
-    width: 40%;
+    width: 25%;
     font-size: 30px;
     font-weight: bold;
     border: 1px solid lightgrey;

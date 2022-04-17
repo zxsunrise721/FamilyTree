@@ -1,7 +1,6 @@
 import {useContext, useEffect} from 'react';
-import { DATASTATUS } from '../../constant';
-import { getCurrentFamilyTree, } from '../../utilies/utilies';
 import FamilyContext from '../../FamilyContext';
+import { DEFAULTMEMBERAVATAR } from '../../constant';
 import '@antv/x6-react-shape';
 import { Graph,} from "@antv/x6";
 
@@ -9,7 +8,8 @@ Graph.registerNode('org-node',
     { width: 280, height: 140,
         markup: [{tagName: 'rect',selector: 'body', },
                 {tagName: 'image',selector: 'avatar', },
-                {tagName: 'text',selector: 'years',},
+                {tagName: 'text',selector: 'birth',},
+                {tagName: 'text',selector: 'death',},
                 {tagName: 'text',selector: 'name',},],
         attrs: {body: { refWidth: '100%',
                         refHeight: '100%',
@@ -20,18 +20,26 @@ Graph.registerNode('org-node',
                         ry: 10,
                         pointerEvents: 'visiblePainted',},
                 avatar: { width: 100, height: 120, refX: 8, refY: 8, },
-                years: {
+                birth: {
                     refX: 0.9,
                     refY: 0.2,
-                    fill: '#fff',
+                    fill: 'yellow',
                     fontFamily: 'Courier New',
                     fontSize: 13,
                     textAnchor: 'end',
-                    textDecoration: 'underline',},
+                    textDecoration: 'none',},
+                death: {
+                        refX: 0.9,
+                        refY: 0.4,
+                        fill: 'yellow',
+                        fontFamily: 'Courier New',
+                        fontSize: 13,
+                        textAnchor: 'end',
+                        textDecoration: 'none',},
                 name: {
                     refX: 0.9,
-                    refY: 0.6,
-                    fill: '#fff',
+                    refY: 0.7,
+                    fill: 'darkred',
                     fontFamily: 'Courier New',
                     fontSize: 10,
                     fontWeight: '800',
@@ -49,30 +57,30 @@ Graph.registerEdge('org-edge',
                                 targetMarker: null,}, },
                     }, true,)
 
-            
-
-const male ='/images/default/male.png';
-
 const FamilyTree2 = () =>{
     const context = useContext(FamilyContext);
     useEffect(()=>{
-        const fetchTree = async () =>{
-            if(context.TreeDataStatus!==DATASTATUS.LOADED){
-                await context.fetchFamilyTree();
-            }
-        }
-        
-
         const graph = new Graph({
             container: document.getElementById('container'),
             connecting:{ anchor: 'orth',},
-            width: 1200,
+            width: 1266,
             height: 800,
+            background: {
+                image: context.getCurrentFamily().backgroundImage,
+                repeat: 'flip-xy',
+                opacity: 0.4,
+            },
+            mousewheel: {
+                enabed: true,
+                modifiers: ['ctrl', 'meta'],
+                zoomAtMousePosition: true,
+            }
         });
-        function member(x, y, years, name,image) {
+        function member(x, y, birth , death, name, image) {
             return graph.addNode({ x, y,shape: 'org-node',
                     attrs: { avatar: {opacity: 1.0, 'xlink:href': image,},
-                            years: {text: years,wordSpacing: '-5px', letterSpacing: 0,},
+                            birth: {text: birth, wordSpacing: '-5px', letterSpacing: 0,},
+                            death: {text: death, wordSpacing: '-5px', letterSpacing: 0,},
                             name: {text: name,fontSize: 16,fontFamily: 'Arial',letterSpacing: 0, }, },
                     })
         }
@@ -86,11 +94,12 @@ const FamilyTree2 = () =>{
                 let i = familyMember.children.length;
                 for(let j=0;j<i;j++){
                     const childMember = familyMember.children[j].member;
-                    let childVertex = {x: vertex.x + 300, y: ccVertex.y + (j+1) * 100};
+                    let childVertex = {x: vertex.x + 300, y: ccVertex.y + (j+1) * 140 };
                     const child = member(childVertex.x, childVertex.y, 
-                                        childMember.years, 
+                                        `birth: ${childMember.birth}`,
+                                        `death: ${childMember.death}`, 
                                         childMember.name, 
-                                        !!childMember.avatar?childMember.avatar:male);
+                                        !!childMember.avatar ? childMember.avatar : DEFAULTMEMBERAVATAR);
                     link(father, child,[{x: vertex.x + 140, y:childVertex.y + 70},]);
                     ccVertex = traverse(childMember,childVertex,child);
                 }
@@ -98,15 +107,14 @@ const FamilyTree2 = () =>{
             return ccVertex;
         }
         
-        fetchTree();
-        let tree = context.state.familyTree;
-        tree = !!!tree ? getCurrentFamilyTree() : tree;
+        let tree = context.getCurrentFamilyTree();
         if(!!tree){
             const vertex = {x:10, y:10};
-            const father = member(vertex.x, vertex.y, tree.member.years, tree.member.name, tree.member.avatar);
+            const father = member(vertex.x, vertex.y, `birth: ${tree.member.birth}`, `death: ${tree.member.death}`, tree.member.name, tree.member.avatar);
             traverse(tree.member, vertex, father);
             graph.zoomToFit({ padding: 20, maxScale: 1 });
         }
+        
     },[])
 
     return(

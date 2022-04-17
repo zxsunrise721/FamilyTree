@@ -10,7 +10,14 @@ const useFetchFamilyMembers = () =>{
                 await context.fetchMembers();
             }
         }
+        const fetchTree = async () =>{
+            if(context.TreeDataStatus!==DATASTATUS.LOADED){
+                await context.fetchFamilyTree();
+            }
+        }
+
         fetchMembers();
+        fetchTree();
         console.log('members:',context.state.members);
     },[]);
 }

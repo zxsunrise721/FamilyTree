@@ -1,14 +1,15 @@
 import styled from 'styled-components';
-import { useContext } from 'react';
+import { useContext, } from 'react';
 import {Link} from 'react-router-dom';
 import FamilyContext from '../FamilyContext';
 import GroupAddSharpIcon from '@material-ui/icons/GroupAddSharp';
-import ListSharpIcon from '@material-ui/icons/ListSharp';
+import { ImTree } from "react-icons/im";
 import ListAltSharpIcon from '@material-ui/icons/ListAltSharp';
 import PermContactCalendarSharpIcon from '@material-ui/icons/PermContactCalendarSharp';
 import AccountTreeSharpIcon from '@material-ui/icons/AccountTreeSharp';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+
 
 const Navbar = () =>{
     const context = useContext(FamilyContext);
@@ -16,11 +17,12 @@ const Navbar = () =>{
         context.clearCurrentFamily();
         window.location.href = '/';
     }
+    const family = context.getCurrentFamily();
     return(
         <Wrapper>
             <Container>
                 <Logo to="/">Family Tree App</Logo>
-                {!!context.state.curFamily && <FamilyContainer onClick={handleClick}>{context.state.curFamily.familyName}</FamilyContainer>}
+                {!!family && <FamilyContainer onClick={handleClick}>{family.familyName}</FamilyContainer>}
                 <Toolbar>
                     <Tooltip title="Family add">
                         <IconButton  aria-label="Family add">
@@ -29,17 +31,26 @@ const Navbar = () =>{
                     </Tooltip>
                     <Tooltip title="Family List">
                         <IconButton aria-label="Family List">
-                            <Link to={'/members'} ><ListAltSharpIcon fontSize="large" color="primary" /></Link>
+                            {!!family ? <Link to={'/members'} ><ListAltSharpIcon fontSize="large" color="primary" /></Link>
+                                    : <ListAltSharpIcon fontSize="large" color="disabled" />}
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Family Tree">
                         <IconButton aria-label="Family Tree">
-                            <Link to={'/tree2'} ><AccountTreeSharpIcon fontSize="large" color="primary"/></Link>
+                            {!!family ? <Link to={'/tree'} ><ImTree size={30} color='blue' /></Link>
+                                        : <ImTree size={30} color="silver"/>}
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Family Tree">
+                        <IconButton aria-label="Family Tree">
+                            {!!family ? <Link to={'/tree2'} ><AccountTreeSharpIcon fontSize="large" color="primary"/></Link>
+                                        : <AccountTreeSharpIcon fontSize="large" color="disabled"/>}
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Family member add">
                         <IconButton aria-label="Family member add">
-                            <Link to={'/edit'} ><PermContactCalendarSharpIcon fontSize="large" color="primary"/></Link>
+                            {!!family ? <Link to={'/edit'} ><PermContactCalendarSharpIcon fontSize="large" color="primary"/></Link>
+                                    : <PermContactCalendarSharpIcon fontSize="large" color="disabled"/>}
                         </IconButton>
                     </Tooltip>
                 </Toolbar>

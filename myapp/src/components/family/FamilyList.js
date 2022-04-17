@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useContext,useState } from 'react';
+import { useContext,} from 'react';
 import {Link} from 'react-router-dom';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -8,12 +8,16 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Switch from '@material-ui/core/Switch';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import FamilyContext from '../../FamilyContext';
+import { DEFAULTMEMBERAVATAR } from '../../constant';
 import useFetchFamilyMembers from '../../hook/useFetchFamilyMembers';
 
+
 const columns = [
+    {id: 'icon', label: '', minWidth: 10},
     {id: 'avatar', label: '', minWidth: 120},
     {id: 'name', label: 'Given Name', minWidth: 120, align: 'center', fontSize:20, fontWeight: 'bold',},
     {id: 'birth-death', label: 'Birth-Death', minWidth: 200, align:'center'},
@@ -44,24 +48,11 @@ const StyledTableRow = withStyles((theme) => ({
 
 const FamilyList = () =>{
     const context = useContext(FamilyContext);
-    // console.log('context family: ',context.state.curFamily);
-    // console.log('context families: ',context.state.families);
-    // console.log('context members: ',context.state.members);
     const classes = useStyles();
-    const [checked, setChecked] = useState(null);
     useFetchFamilyMembers();
-    const toggleChecked = () =>{
-        setChecked((prev) => !prev);
-        if(checked){
-            window.location.href='/tree';
-        }
-    }
 
     return (
         <Wrapper>
-            {/* <Toolbar>
-                <Switch color="primary" checked={checked} onChange={toggleChecked} />
-            </Toolbar> */}
             <Paper className={classes.root}>
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
@@ -79,10 +70,16 @@ const FamilyList = () =>{
                     return(
                         
                         <StyledTableRow key={member._id}>
-                            <StyledTableCell key={member._id+'1'}><Link to={`/member/${member._id}`}><Img src={member.avatar} alt={member.memberName}/></Link></StyledTableCell>
+                            <StyledTableCell key={member._id+'0'}>
+                                    <Tooltip title="Family member edit">
+                                    <IconButton  aria-label="Family member edit">
+                                        <Link to={`/edit/${member._id}`} ><ContactsIcon  fontSize="large" color="primary" /></Link>
+                                    </IconButton>
+                                    </Tooltip></StyledTableCell>
+                            <StyledTableCell key={member._id+'1'}><Link to={`/member/${member._id}`}><Img src={!!member.avatar ? member.avatar : DEFAULTMEMBERAVATAR} alt={member.memberName}/></Link></StyledTableCell>
                             <StyledTableCell key={member._id+'2'}><Link to={`/member/${member._id}`}>{member.memberName}</Link></StyledTableCell>
                             <StyledTableCell key={member._id+'3'}>{member.birth}~{member.death}</StyledTableCell>
-                            <StyledTableCell key={member._id+'4'}><TextareaAutosize maxRows={8} defaultValue={member.profile} readOnly={true} /></StyledTableCell>
+                            <StyledTableCell key={member._id+'4'}><textarea rows="8" cols="50" readOnly={true} defaultValue={member.profile} /></StyledTableCell>
                             <StyledTableCell key={member._id+'5'}>{ member.relationshipType} {!!member.relationshipWith && member.relationshipWith!=="null" ? `of ${member.relationship.rsMemberName}` : ''}</StyledTableCell>
                         </StyledTableRow >
                     );
@@ -91,27 +88,18 @@ const FamilyList = () =>{
                 }
                 </Table>
             </Paper>
-            <Link to={'/edit'}><Button>Create Family Member</Button></Link>
         </Wrapper>
     );
 }
 
 
 const Wrapper = styled.div`
-    max-width: 1200px;
+    max-width: 1270px;
 `;
-const Toolbar = styled.div`
-    height:30px;
-    background-color:lightgrey;
-`;
-
-// const MemberDiv = styled.div``;
 
 const Img = styled.img`
     width:100px;
     height:120px;
 `;
-const Button = styled.button`
-
-`;
+const Button = styled.button``;
 export default FamilyList;

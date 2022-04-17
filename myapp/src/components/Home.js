@@ -7,7 +7,6 @@ import useFetchFamilies from '../hook/useFetchFamilies';
 const Home = () =>{
     const context = useContext(FamilyContext);
     useFetchFamilies();
-    // console.log(context.families.data);
     return(
         <Wrapper>
             {!!context.state.families && context.state.families.length>0 && 

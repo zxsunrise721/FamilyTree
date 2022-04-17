@@ -22,7 +22,7 @@ function App() {
           <Route exact path="/tree" element={<FamilyTree />} />
           <Route exact path="/create" element={<FamilyCreate />} />
           <Route exact path="/edit" element={<ProfileEdit />} />
-          <Route exact path="/edit/:familyId" element={<ProfileEdit />} />
+          <Route exact path="/edit/:memberId" element={<ProfileEdit />} />
           <Route exact path="/upload" element={<Upload />} />
           <Route exact path="/tree2" element={<FamilyTree2 />} />
         </Routes>

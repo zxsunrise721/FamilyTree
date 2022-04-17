@@ -22,3 +22,6 @@ export const USERSTATUS = {
     UNLOGING : 0,
     LOGINGED : 1,
 }
+
+export const DEFAULTMEMBERAVATAR = '/images/default/male.png';
+export const DEFAULT_EDIT_AVATAR = '/images/default/defaultAvatar.jpg';

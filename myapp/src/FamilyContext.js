@@ -1,6 +1,5 @@
 import { createContext, useReducer } from 'react';
 import { DATASTATUS, USERSTATUS} from './constant';
-import { getCurrentFamily, getCurrentFamilyTree, } from './utilies/utilies';
 
 const initialState = { 
     families: [],
@@ -66,18 +65,22 @@ export const FamilyProvider = ({children}) =>{
 
     const setCurrentFamily = (family) =>{
         dispatch({type:'set-current-family', currentFamily: family});
+        window.sessionStorage.removeItem('current-family');
+        window.sessionStorage.removeItem('family-tree');
+        
         window.sessionStorage.setItem('current-family', JSON.stringify(family) );
     }
 
     const clearCurrentFamily = () =>{
         dispatch({type:'clear-current-family'});
         window.sessionStorage.removeItem('current-family');
+        window.sessionStorage.removeItem('family-tree');
     }
 
     const fetchMembers = async (isRefresh) =>{
         dispatch({type:'fetch-members'});
         if((!!isRefresh && state.membersDataStatus === DATASTATUS.LOADED)||(state.membersDataStatus === DATASTATUS.LOADING)){ 
-            let currentFamily = !!state.curFamily ? state.curFamily : getCurrentFamily();
+            let currentFamily = getCurrentFamily();
             let resp = await request('GET',`/api/get-family-members/${currentFamily._id}`);
             if(resp.status===200){
                 !!resp.data && resp.data.length > 0 ?
@@ -90,7 +93,7 @@ export const FamilyProvider = ({children}) =>{
     const fetchFamilyTree = async () =>{
         dispatch({type:'fetch-family-tree'});
         if(state.TreeDataStatus===DATASTATUS.LOADING){
-            let currentFamily = !!state.curFamily ? state.curFamily : getCurrentFamily();
+            let currentFamily = getCurrentFamily();
             let resp = await request('GET',`/api/get-family-tree/${currentFamily._id}`);
             if(resp.status === 200){ 
                 dispatch({type:'fetched-family-tree', tree: resp.data});
@@ -98,8 +101,34 @@ export const FamilyProvider = ({children}) =>{
             }else{ dispatch({type:'error-family-tree', error:resp.message}); }
         }
     }
+
+    const getCurrentFamily = () =>{
+        let family;
+        if(!!state.curFamily){ family = state.curFamily; }
+        else{
+            let f = window.sessionStorage.getItem('current-family');
+            family = !!f ? JSON.parse(f) : null;
+        } 
+        return family;
+    }
+    const getCurrentFamilyTree = () =>{
+        let tree;
+        if(!!state.familyTree){ tree = state.familyTree; }
+        else{
+            let t = window.sessionStorage.getItem('family-tree');
+            tree = !!t ? JSON.parse(t) : null;
+        } 
+        return tree;
+    }
     
-    const values = { request, state, fetchFamilies, fetchMembers, setCurrentFamily, clearCurrentFamily, fetchFamilyTree, };
+    const values = { request, state, 
+                    fetchFamilies, 
+                    fetchMembers, 
+                    setCurrentFamily, 
+                    clearCurrentFamily, 
+                    fetchFamilyTree, 
+                    getCurrentFamily, 
+                    getCurrentFamilyTree, };
     return <FamilyContext.Provider value={values}>{children}</FamilyContext.Provider>
 }
 
