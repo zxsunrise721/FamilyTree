@@ -8,7 +8,7 @@ const getFamilyTree = async (req, res, next) => {
     let process = new FamilyTree();
     await process.dbInstance();
     let tree = await process.getFamilyTree(familyId);
-    if(!!tree){ tree = await process.makeFamilyTree(familyId); }
+    if(!!!tree){ tree = await process.makeFamilyTree(familyId); }
     process.close();
     !!tree ?
         res.status(200).json({status:200,data:tree,message:`Got family tree by ${familyId}`}) :

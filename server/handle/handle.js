@@ -118,4 +118,47 @@ const createFamilyMember = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
-module.exports  = { createFamily, getFamilies, getMemberByFamily, createFamilyMember, getMemberById, }
+function processUploadFile(files, familyId, _id){
+    let src;
+    let img = files.avatar;
+    img.mv('./uploads/'+img.name);
+    if(!!img){
+        let saveTo = SAVEIMAGEPATH + familyId.toString();
+        let imgpath = IMAGEPATH + familyId.toString();
+        let imgname = `${_id}`+img.name;
+        fs.copyFileSync('./uploads/' + img.name, `${saveTo}/${imgname}`);
+        let data = fs.readFileSync(`${saveTo}/${imgname}`);
+        if(!!data){ src = `${imgpath}/${imgname}`; }
+    }
+    return src;
+}
+
+const updateFamilyMember = async (req, res) => {
+    // console.log('body',req.body);
+    // console.log('file',req.files);
+    try{
+        let memberObj = { _id: req.body._id, }
+        if(!!req.body.memberName){memberObj = {...memberObj, memberName: req.body.memberName};}
+        if(!!req.body.birth){memberObj = {...memberObj, birth: req.body.birth};}
+        if(!!req.body.death){memberObj = {...memberObj, death: req.body.death};}
+        if(!!req.body.profile){memberObj = {...memberObj, profile: req.body.profile};}
+        if(!!req.body.relationshipType){memberObj = {...memberObj, relationshipType: req.body.relationshipType};}
+        if(!!req.body.relationshipWith){memberObj = {...memberObj, relationshipWith: req.body.relationshipWith};}
+
+        let imgSrc;
+        if(!!req.files){ imgSrc = processUploadFile(req.files, req.body.familyId, req.body._id); }
+        if(!!imgSrc){ memberObj = {...memberObj,avatar: imgSrc}; }
+
+        const process = new FamilyMember();
+        await process.dbInstance();
+        let member = await process.updateFamilyMember(memberObj);
+        process.close();
+
+        let _message = `Success to create family member.`;
+        !!member ? res.status(200).json({ status:200, message: _message, data: member }) :
+            res.status(404).json({ status:404, message: _message, data: null });
+    }catch(err){console.log(err); res.status(500).json({ status:500, error:err}) };
+}
+
+
+module.exports  = { createFamily, getFamilies, getMemberByFamily, createFamilyMember, getMemberById, updateFamilyMember, }

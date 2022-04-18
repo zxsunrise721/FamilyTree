@@ -49,7 +49,8 @@ const FamilyList = styled(Link)`
 `;
 const Button = styled.button`
     font-size: 32px;
-    color: yellow;
+    font-weight: bold;
+    color: darkblue;
     background-image: ${props => `url(${props.img})`};
     border-radius:5px;
     box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.5);

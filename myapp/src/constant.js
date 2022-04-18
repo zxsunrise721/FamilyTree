@@ -25,3 +25,4 @@ export const USERSTATUS = {
 
 export const DEFAULTMEMBERAVATAR = '/images/default/male.png';
 export const DEFAULT_EDIT_AVATAR = '/images/default/defaultAvatar.jpg';
+export const DEFAULT_BACKGROUND_IMAGE = '/images/default/cloud.png';

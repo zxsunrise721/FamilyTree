@@ -5,6 +5,7 @@ import FamilyContext from '../FamilyContext';
 const useFetchFamilyMembers = () =>{
     const context = useContext(FamilyContext);
     useEffect(()=>{
+        window.sessionStorage.removeItem('family-tree');
         const fetchMembers = async ()=>{
             if(context.state.membersDataStatus!==DATASTATUS.LOADED){
                 await context.fetchMembers();
@@ -18,7 +19,7 @@ const useFetchFamilyMembers = () =>{
 
         fetchMembers();
         fetchTree();
-        console.log('members:',context.state.members);
+        
     },[]);
 }
 

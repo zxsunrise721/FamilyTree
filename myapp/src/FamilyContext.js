@@ -1,5 +1,6 @@
 import { createContext, useReducer } from 'react';
 import { DATASTATUS, USERSTATUS} from './constant';
+import axios from 'axios';
 
 const initialState = { 
     families: [],
@@ -40,15 +41,18 @@ export const FamilyProvider = ({children}) =>{
     const request = async (method, url, body) =>{
         method = method.toUpperCase();
         if(method==='GET'){ body = undefined; }
-        else{ body = body && JSON.stringify(body); }
-        let res = await fetch(url,{method,
-                        body,
-                        headers: {'Content-Type': 'application/json', 
-                                'Accept':'application/json',
-                                // 'Authorization': ('Bearer ' + localStorage.getItem('token')) || '',
-                                },
-        });
+        else{ body = !!body && JSON.stringify(body); }
+        let res = await fetch(url,{method,body,});
         return res.json();
+    }
+    const request1 = async (method, url, body) =>{
+        method = method.toUpperCase();
+        if(method==='GET'){ body = undefined; }
+        else{ body = body && JSON.stringify(body); console.log('body',body);}
+        axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+        let res = await axios({method: method,url:url, body: body});
+        console.log(res);
+        return res.data;
     }
 
     const fetchFamilies = async (isRefresh) =>{
@@ -67,7 +71,7 @@ export const FamilyProvider = ({children}) =>{
         dispatch({type:'set-current-family', currentFamily: family});
         window.sessionStorage.removeItem('current-family');
         window.sessionStorage.removeItem('family-tree');
-        
+
         window.sessionStorage.setItem('current-family', JSON.stringify(family) );
     }
 
@@ -83,9 +87,11 @@ export const FamilyProvider = ({children}) =>{
             let currentFamily = getCurrentFamily();
             let resp = await request('GET',`/api/get-family-members/${currentFamily._id}`);
             if(resp.status===200){
-                !!resp.data && resp.data.length > 0 ?
-                    dispatch({type:'fetched-members', data: resp.data}):
-                    dispatch({type:'nofound-members'});
+                dispatch({type:'fetched-members', data: resp.data});
+            }else if(resp.status===404){
+                console.log('No members found');
+                dispatch({type:'nofound-members'});
+                window.location.href = '/edit';
             }else{ dispatch({type:'error-members', error:resp.message})}
         }
     }
@@ -94,7 +100,7 @@ export const FamilyProvider = ({children}) =>{
         dispatch({type:'fetch-family-tree'});
         if(state.TreeDataStatus===DATASTATUS.LOADING){
             let currentFamily = getCurrentFamily();
-            let resp = await request('GET',`/api/get-family-tree/${currentFamily._id}`);
+            let resp = await request('GET',`/api/create-family-tree/${currentFamily._id}`);
             if(resp.status === 200){ 
                 dispatch({type:'fetched-family-tree', tree: resp.data});
                 window.sessionStorage.setItem('family-tree', JSON.stringify(resp.data) );
@@ -120,6 +126,11 @@ export const FamilyProvider = ({children}) =>{
         } 
         return tree;
     }
+
+    const getMember = async (memberId) =>{
+        let resp = await request('GET',`/api/get-family-member/${memberId}`,null);
+        return resp.data;
+    }
     
     const values = { request, state, 
                     fetchFamilies, 
@@ -128,7 +139,8 @@ export const FamilyProvider = ({children}) =>{
                     clearCurrentFamily, 
                     fetchFamilyTree, 
                     getCurrentFamily, 
-                    getCurrentFamilyTree, };
+                    getCurrentFamilyTree, 
+                    getMember, };
     return <FamilyContext.Provider value={values}>{children}</FamilyContext.Provider>
 }
 

@@ -81,6 +81,45 @@ module.exports = class FamilyMember extends DBPool {
         return member;
     }
 
+    async updateFamilyMember(newMember){
+        if(!this.isConnected){await this.dbInstance();}
+        let member;
+        let _id = newMember._id;
+        try{
+            let rsMember;
+            if(!!newMember.relationshipWith && ObjectId.isValid(newMember.relationshipWith)){
+                rsMember = await this.getMember(newMember.relationshipWith);
+                newMember =  {...newMember, relationshipWith: !!rsMember ? rsMember._id: null,
+                                            relationship:{ rsMemberId: rsMember._id, rsMemberName: rsMember.memberName } }
+            }
+            // get member info before updating, get the old relationshipType and relationshipWith
+            member = await this.getMember(newMember._id);
+            let oldRsType = member.relationshipType;
+            let oldRsWith = member.relationshipWith;
+            // update member
+            delete newMember._id;
+            console.log(newMember);
+            let result = await this.memberColl.updateOne({_id: ObjectId(_id)},{$set: newMember});
+            console.log(result);
+            // processing relationship
+            if(!!newMember.relationshipType && newMember.relationshipType==='Child'){
+                if(!!rsMember){
+                    let arr = !!rsMember.children ? rsMember.children : [];
+                    arr.push(newMember._id);
+                    let upResult = await this.memberColl.updateOne({_id: rsMember._id},{$set:{children: arr}});
+                }
+            }else if(!!newMember.relationshipType && newMember.relationshipType==='Couple'){
+                if(!!rsMember){
+                    let arr = !!rsMember.couple ? rsMember.couple : [];
+                    arr.push(newMember._id);
+                    let upResult = await this.memberColl.updateOne({_id: rsMember._id},{$set:{couple: arr}});
+                }
+            }
+            member = !!result.modifiedCount>0 ? await this.getMember(_id) : null;
+        }catch(err){console.error(err);}
+        return member;
+    }
+
     async updateMemberAvatar(memberId, avatarSrc){
         if(!this.isConnected){await this.dbInstance();}
         memberId = typeof memberId === 'string' ? ObjectId(memberId) : memberId;
