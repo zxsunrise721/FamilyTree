@@ -23,7 +23,7 @@ const FamilyCreate = () =>{
                     setMsg(resp.message);
                     let respData = resp.data;
                     console.log('message: ',resp.message, 'data: ',resp.data);
-                    window.sessionStorage.setItem('family', JSON.stringify(respData.family));
+                    window.sessionStorage.setItem('current-family', JSON.stringify(respData.family));
                     window.location.href = '/';
                 });
         }catch(err){console.error(err)};
@@ -59,6 +59,7 @@ const FamilyCreate = () =>{
 
 const Wrapper = styled.div`
     margin-top: 300px;
+    background-image: url('/images/default/cloud.png');
     background-position: center;
     background-size: cover;
     position: relative;

@@ -95,6 +95,8 @@ const FamilyList = () =>{
 
 const Wrapper = styled.div`
     max-width: 1270px;
+    background-image: url('/images/default/cloud.png');
+    background-position: center;
 `;
 
 const Img = styled.img`

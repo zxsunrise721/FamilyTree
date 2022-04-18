@@ -1,5 +1,6 @@
 import {useContext, useEffect} from 'react';
 import FamilyContext from '../../FamilyContext';
+import useFetchFamilyTree from '../../hook/useFetchFamilyTree';
 import { DEFAULTMEMBERAVATAR } from '../../constant';
 import '@antv/x6-react-shape';
 import { Graph,} from "@antv/x6";
@@ -59,6 +60,7 @@ Graph.registerEdge('org-edge',
 
 const FamilyTree2 = () =>{
     const context = useContext(FamilyContext);
+    useFetchFamilyTree();
     useEffect(()=>{
         const graph = new Graph({
             container: document.getElementById('container'),
