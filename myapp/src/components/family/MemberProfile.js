@@ -1,37 +1,10 @@
 import styled from 'styled-components';
 import {useState, useEffect, useContext} from 'react';
 import {useParams, Link } from 'react-router-dom';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import FamilyContext from '../../FamilyContext';
-import { DEFAULTMEMBERAVATAR, DEFAULT_BACKGROUND_IMAGE,DEFAULT_EDIT_AVATAR } from '../../constant';
-
-const useStyles = makeStyles({
-    name:{
-        paddingTop: 10,
-    },
-    select:{
-        marginBottom: 5,
-        paddingTop: 10,
-        width: 200,
-        fontSize: 16,
-        fontweight: 'bold',
-    },
-    button:{
-        marginLeft: 60,
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    profile:{
-        paddingTop: 10,
-        fontSize: 16,
-    }
-});
+import { DEFAULT_BACKGROUND_IMAGE,DEFAULT_EDIT_AVATAR } from '../../constant';
 
 const MemberProfile = () =>{
-    const classes = useStyles();
     const context = useContext(FamilyContext);
     const {memberId} = useParams();
     const [member, setMember] = useState(null);
@@ -47,46 +20,56 @@ const MemberProfile = () =>{
     return (
         !!member &&
         <Wrapper>
-            <HeadIMG className="img" bgImg={!!context.getCurrentFamily() && context.getCurrentFamily().backgroundImage!=='' ? context.getCurrentFamily().backgroundImage : DEFAULT_BACKGROUND_IMAGE}/>
+            <HeadIMG className="img" bgImg={!!context.getCurrentFamily() && context.getCurrentFamily().backgroundImage!=='' 
+                                                    ? context.getCurrentFamily().backgroundImage : DEFAULT_BACKGROUND_IMAGE}/>
             <MemberHeadDiv>
                 <MemberHead>
                     <div>
                     <MemberIMG id='profile-image' src={!!member.avatar ? member.avatar : DEFAULT_EDIT_AVATAR}/>
                     </div>
                     <MemberName>
-                    <TextField className={classes.name} required id="memberName" variant="filled"  value={member.memberName} readOnly />
+                        <input type="text" name="memberName" value={member.memberName} readOnly/>
                     </MemberName>
-                    <Link to={`/edit/${member._id}`}><Button className={classes.button} variant="contained" color="primary" >Edit Member Profile</Button></Link>
+                    <Link to={`/edit/${member._id}`}><Button>Edit Member Profile</Button></Link>
                 </MemberHead>
             </MemberHeadDiv>
             <Form id='memberForm' enctype='multipart/form'>
             <MemberRelationship>
-                <TextField select className={classes.select} id="relationshipType" 
-                            label="type of relationship" variant="filled" readOnly
-                            value={member.relationshipType} >
-                            <MenuItem value={'Root'}>Root</MenuItem>
-                            <MenuItem value={'Child'}>Child</MenuItem>
-                            <MenuItem value={'Couple'}>Couple</MenuItem>
-                </TextField>
-                <TextField select className={classes.select} id="relationshipWith"  label="with Member" readOnly
-                            variant="filled" value={!!member.relationshipWith ? member.relationshipWith : ''} >
-                                <MenuItem value={""}><em>None</em></MenuItem>
-                            {!!context.state.members && context.state.members.length>0 && context.state.members.map(memb=>(
-                                <MenuItem key={memb._id} value={memb._id}>{memb.memberName}</MenuItem>
-                            ))}
-                </TextField>
+                <div>
+                    <label>Relationship Type:</label>
+                    <select name="relationshipType" id="relationshipType" value={member.relationshipType} readOnly>
+                        <option value="#">-- Choose relationship type: --</option>
+                        <option value="Root">Root</option>
+                        <option value="Child">Child</option>
+                        <option value="Couple">Couple</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Relationship With:</label>
+                    <select name="relationshipWith" id="relationshipWith" value={member.relationshipWith} readOnly>
+                        <option value="#">-- Choose relationship with: --</option>
+                        {!!context.state.members && context.state.members.length>0 && context.state.members.map(member=>{
+                            return <option value={member._id} key={member._id}>{member.memberName}</option>
+                        })}
+                    </select>
+                </div>
             </MemberRelationship>
             <MemberInfo>
                 <ProfileInfo>
                 <BDdiv>
-                    <TextField id="birth" label="Birth" type="date" value={member.birth} InputLabelProps={{shrink: true,}}  readOnly/>
-                    <p> - </p>
-                    <TextField id="death" label="Death" type="date" value={member.death} InputLabelProps={{shrink: true,}}  readOnly />
+                    <div>
+                        <label>Birth:</label>
+                        <input type="date" name="birth" value={member.birth} readOnly/>
+                    </div>
+                    <p> ~ </p>
+                    <div>
+                        <label>Death:</label>
+                        <input type="date" name="death" value={member.death} readOnly/>
+                    </div>
                 </BDdiv>
                 <ProfileDiv>
-                    <TextField className={classes.profile} id="profile" label="Edit Member's Profile" 
-                                multiline minRows={10}  maxRows={15} readOnly
-                                variant="filled" fullWidth={true} value={member.profile}  />
+                    <label>Profile:</label>
+                    <textarea id="profile" name="profile" rows="10" cols="50" value={member.profile} readOnly/>
                 </ProfileDiv>
                 </ProfileInfo>
             </MemberInfo>
@@ -98,11 +81,11 @@ const MemberProfile = () =>{
 }
 
 const Wrapper = styled.div`
-    max-width: 1296px;
+    min-width: 100vw;
     height: 100%;
 `;
 const HeadIMG = styled.div`
-    width: 1200px;
+    width: 100%;
     height: 300px;
     background-image: ${props =>`url(${props.bgImg})`};
     background-size:cover;
@@ -136,11 +119,19 @@ const MemberIMG = styled.img`
 const MemberName = styled.div`
     padding-left: 20px;
     input{
-        height: 40px;
+        padding-left: 5px;
+        height: 60px;
         width: 400px;
+        background-color: lightgrey;
+        border:none;
+        border-bottom: 3px solid blue;
         font-size: 40px;
         font-weight: 700;
-        border:none;
+        opacity: 0.5;
+        :focus{
+            border: 1px solid lightblue;
+            opacity:1;
+        }
     }
 `;
 
@@ -152,29 +143,63 @@ const MemberInfo = styled.div`
     display: flex;
     flex-direction: row;
 `;
+
+const Button = styled.button`
+    margin-left: 50px;
+    width:360px;
+    height: 42px;
+    font-size: 28px;
+    font-weight: bold;
+    background-color: ${props=>props.disabled ? 'lightgrey' : 'lightblue'};
+    color: ${props=>props.disabled ? 'yellow' : 'red'};
+    border-radius: 5px;
+    box-shadow:  1px 1px 1px 1px rgba(0, 0, 0, 0.5);
+`;
 const Form = styled.div``;
 const ProfileInfo = styled.div`
     padding-left: 5px;
     width: 100%;
 `;
 const BDdiv = styled.div`
+    margin-top: 10px;
+    height: 40px;
     display:flex;
     flex-direction: row;
     align-items: center;
     justify-content:space-around;
     align-content: center;
-    input{
-        height:32px;
+    border-bottom: 1px solid lightgrey;
+    label{
         font-size:30px;
+        font-weight: bold;
+    }
+    input{
+        margin-bottom: 10px;
+        padding-left: 20px;
+        height:36px;
+        font-size:30px;
+        background-color: lightgrey;
         border:none;
+        opacity: 0.6;
+        :focus{
+            border: 1px solid yellow;
+            opacity:1;
+        }
     }
 `;
 const ProfileDiv = styled.div`
+    margin-top:10px;
     display:flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content:center;
     align-content: center;
+    textarea{
+        width:100%;
+        height: 300px;
+        font-size: 18px;
+        background-color: lightgrey;
+    }
 `;
 const MemberRelationship = styled.div`
     margin-top: 190px;
@@ -182,20 +207,26 @@ const MemberRelationship = styled.div`
     width: 100%;
     height: 100px;
     border-bottom: 1px solid lightgrey;
-    border: 1px solid lightgrey;
     display: flex;
     flex-direction: row;
     align-items:center;
     justify-content: space-around;
     align-content: flex-start;
+    font-size: 28px;
+    font-weight: bold;
+    select{
+        height: 30px;
+        font-size:20px;
+        background-color: lightgrey;
+    }
 `;
 
 const PhotoDiv = styled.div`
-    margin-top: 10px;
+    /* margin-top: 10px;
     padding-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    background-color: lightcyan;
+    background-color: lightcyan; */
 `;
 export default MemberProfile;

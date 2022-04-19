@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from './Navbar';
+import GlobalStyles from '../GlobalStyles';
 import Home from './Home';
 import ProfileEdit from './Form/ProfileEdit';
 import Upload from './Form/Upload';
@@ -12,6 +13,9 @@ import FamilyTree2 from './family/FamilyTree2';
 
 function App() {
   return (
+    <>
+    <GlobalStyles />
+    
     <BrowserRouter>
       <Navbar />
       <Container>
@@ -28,6 +32,7 @@ function App() {
         </Routes>
       </Container>
     </BrowserRouter>
+    </>
   );
 }
 const Container = styled.nav`

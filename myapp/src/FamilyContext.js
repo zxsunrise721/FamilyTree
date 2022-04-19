@@ -88,6 +88,7 @@ export const FamilyProvider = ({children}) =>{
             let resp = await request('GET',`/api/get-family-members/${currentFamily._id}`);
             if(resp.status===200){
                 dispatch({type:'fetched-members', data: resp.data});
+                if(resp.data.length>0){fetchFamilyTree();}
             }else if(resp.status===404){
                 console.log('No members found');
                 dispatch({type:'nofound-members'});

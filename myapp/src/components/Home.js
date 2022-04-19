@@ -27,9 +27,10 @@ const Home = () =>{
 }
 
 const Wrapper = styled.div`
-    width:1200px;
-    height: 1000px;
+    min-width: 100vw;
+    min-height: 120vh;
     background-image: url('/images/default/cloud.png');
+    background-color: yellow;
     
 `;
 const ContainerDiv = styled.div`

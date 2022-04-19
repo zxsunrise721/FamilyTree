@@ -1,0 +1,27 @@
+/* Tooltip 容器 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; 
+}
+/* Tooltip 文本 */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    height: 24px;
+    width: 120px;
+    background-color: white;
+    color: blue;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    opacity: 0.7;
+    /* 定位 */
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    left: 50%;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import {useContext, useEffect} from 'react';
 import FamilyContext from '../../FamilyContext';
 import useFetchFamilyTree from '../../hook/useFetchFamilyTree';
@@ -60,15 +61,15 @@ Graph.registerEdge('org-edge',
 
 const FamilyTree1 = () =>{
     const context = useContext(FamilyContext);
-    useFetchFamilyTree();
+    // useFetchFamilyTree();
     useEffect(()=>{
         const graph = new Graph({
             container: document.getElementById('container'),
             connecting:{ anchor: 'orth',},
-            width: 1266,
-            height: 800,
+            width: 1200,
+            height: 1000,
             background: {
-                image: context.getCurrentFamily().backgroundImage,
+                // image: context.getCurrentFamily().backgroundImage,
                 repeat: 'flip-xy',
                 opacity: 0.4,
             },
@@ -120,8 +121,15 @@ const FamilyTree1 = () =>{
     },[])
 
     return(
+        <Wrapper>
         <div id="container"></div>
+        </Wrapper>
     );
 }
 
+const Wrapper = styled.div`
+    min-width: 100vw;
+    min-height: 120vh;
+    background-image: url('/images/default/cloud.png');
+`;
 export default FamilyTree1;

@@ -1,41 +1,13 @@
 import styled from 'styled-components';
 import {useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
+import { FcCameraAddon } from "react-icons/fc";
 import FamilyContext from '../../FamilyContext';
 import { DEFAULT_EDIT_AVATAR } from '../../constant';
-
-const useStyles = makeStyles({
-    name:{
-        paddingTop: 10,
-    },
-    select:{
-        marginBottom: 5,
-        paddingTop: 10,
-        width: 200,
-        fontSize: 16,
-        fontweight: 'bold',
-    },
-    button:{
-        marginLeft: 60,
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    profile:{
-        paddingTop: 10,
-        fontSize: 16,
-    }
-});
 
 const initialMember = {memberName:null, birth:null,death:null, profile:null, relationshipType:null, relationshipWith:null};
 const ProfileEdit = () =>{
     const context = useContext(FamilyContext);
-    const classes = useStyles();
     const {memberId} = useParams();
     const [profileImg, setProfileImg] = useState(null);
     const [member, setMember] = useState(initialMember);
@@ -116,19 +88,19 @@ const ProfileEdit = () =>{
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
+        if(!!member.memberName){
+            alert('Member must be enter!');
+            return;
+        }
         let formData = new FormData();
-        console.log('save new member');
-        console.log('member',member);
-        console.log('update:',update,' change:',change);
         formData.append('familyId',context.getCurrentFamily()._id);
-        formData.append('memberName', member.memberName); console.log(member.memberName);
+        formData.append('memberName', member.memberName); 
         formData.append('avatar',profileImg);
         formData.append('birth', member.birth);
         formData.append('death', member.death);
         formData.append('profile', member.profile);
         formData.append('relationshipType', member.relationshipType);
         formData.append('relationshipWith', member.relationshipWith);
-        
         try{
             fetch('/api/family-member-create', {method: 'POST',body: formData,})
                 .then(res=>res.json())
@@ -142,9 +114,6 @@ const ProfileEdit = () =>{
     }
     const handleUpdate = async (e) =>{
         e.preventDefault();
-        console.log('update new member');
-        console.log('member',member);
-        console.log('update:',update,' change:',change);
         let formData = new FormData();
         formData.append('_id',memberId);
         formData.append('familyId',context.getCurrentFamily()._id);
@@ -157,7 +126,6 @@ const ProfileEdit = () =>{
             if(item==='relationshipType'){formData.append('relationshipType', member.relationshipType);}
             if(item==='relationshipWith'){formData.append('relationshipWith', member.relationshipWith);}
         })
-        console.log('formData', JSON.stringify(formData));
         try{
             try{
                 fetch('/api/family-member-update', {
@@ -186,33 +154,29 @@ const ProfileEdit = () =>{
                         <IconContainer>
                         <Input accept="image/*" id="icon-button-file" type="file" onChange={(ev)=>handleImageChange(ev)}/>
                         <label htmlFor="icon-button-file">
-                            <IconButton color="primary" aria-label="upload picture" component="span">
-                                <PhotoCamera fontSize='large'/>
-                            </IconButton>
+                            <div className="tooltip"> 
+                                <span className="tooltiptext">Add A Photo</span>
+                                <FcCameraAddon size={40}/>
+                            </div>
                         </label>
                         </IconContainer>
                     </div>
                     <MemberName>
                         {!!!memberId ?
-                        <TextField className={classes.name} required id="memberName" label="Enter member name (Required)" 
-                                    variant="filled" 
-                                    onChange={(ev)=>handleMemberChange('memberName',ev)} /> :
-                        <TextField className={classes.name} required id="memberName" label="Enter member name (Required)" 
-                                    variant="filled"  value={member.memberName} 
-                                    onChange={(ev)=>handleMemberChange('memberName',ev)} />
+                        <input type="text" name="memberName" required placeholder="Enter member name" onChange={(ev)=>handleMemberChange('memberName',ev)}/>:
+                        <input type="text" name="memberName" value={member.memberName} onChange={(ev)=>handleMemberChange('memberName',ev)}/>
                         }
                     </MemberName>
                     {!!!memberId ?
-                        <Button className={classes.button} variant="contained" 
-                                color="primary" onClick={ev=>handleSubmit(ev)}>Save Member Profile
-                        </Button> :
+                        <>
+                        {!!member.memberName ? 
+                            <Button disabled={false} onClick={ev=>handleSubmit(ev)}>Save Member Profile</Button> :
+                            <Button disabled={true} >Save Member Profile</Button>}
+                        </>
+                        :
                         !!!update ? 
-                            <Button className={classes.button} variant="contained" 
-                                    color="disabled" disabled>Update Member Profile
-                            </Button> :
-                            <Button className={classes.button} variant="contained" color="primary"
-                                    onClick={ev=>handleUpdate(ev)}>Update Member Profile
-                            </Button>
+                            <Button disabled={true} >Update Member Profile</Button> :
+                            <Button disabled={false} onClick={ev=>handleUpdate(ev)}>Update Member Profile</Button>
                     }
                     
                     
@@ -222,83 +186,101 @@ const ProfileEdit = () =>{
             <MemberRelationship>
                     {!!!memberId ?
                         <>
-                        <TextField className={classes.select} id="relationshipType" select label="type of relationship" variant="filled"
-                                    onChange={(ev)=>handleMemberChange('rsType',ev)}>
-                            <MenuItem value={'Root'}>Root</MenuItem>
-                            <MenuItem value={'Child'}>Child</MenuItem>
-                            <MenuItem value={'Couple'}>Couple</MenuItem>
-                        </TextField>
-                        <TextField className={classes.select} id="relationshipWith" select label="with Member" variant="filled"
-                                    onChange={(ev)=>handleMemberChange('rsWith',ev)}>
-                            <MenuItem value={""}><em>None</em></MenuItem>
-                            {(!!context.state.members && context.state.members.length>0) && context.state.members.map(memb=>(
-                                    <MenuItem key={memb._id} value={memb._id}>{memb.memberName}</MenuItem>)) 
-                            }
-                        </TextField>
+                        <div>
+                        <label>Relationship Type:</label>
+                        <select name="relationshipType" id="relationshipType" placeholder="choose relationship" onChange={(ev)=>handleMemberChange('rsType',ev)}>
+                            <option value="#">-- Choose relationship type: --</option>
+                            <option value="Root">Root</option>
+                            <option defaultValue="Child">Child</option>
+                            <option value="Couple">Couple</option>
+                        </select>
+                        </div>
+                        <div>
+                        <label>Relationship With:</label>
+                        <select name="relationshipWith" id="relationshipWith" onChange={(ev)=>handleMemberChange('rsWith',ev)}>
+                            <option value="#">-- Choose relationship with: --</option>
+                            {!!context.state.members && context.state.members.length>0 && context.state.members.map(member=>{
+                                return <option value={member._id} key={member._id}>{member.memberName}</option>
+                            })}
+                        </select>
+                        </div>
                         </>
                         :
                         <>
-                        <TextField className={classes.select} id="relationshipType" select label="type of relationship" variant="filled"
-                                    value={member.relationshipType} onChange={(ev)=>handleMemberChange('rsType',ev)}>
-                            <MenuItem value={'Root'}>Root</MenuItem>
-                            <MenuItem value={'Child'}>Child</MenuItem>
-                            <MenuItem value={'Couple'}>Couple</MenuItem>
-                        </TextField>
-                        <TextField className={classes.select} id="relationshipWith" select label="with Member" variant="filled"
-                                    value={!!member.relationshipWith ? member.relationshipWith : ''} 
-                                    onChange={(ev)=>handleMemberChange('rsWith',ev)}>
-                                <MenuItem value={""}><em>None</em></MenuItem>
-                            {!!context.state.members && context.state.members.length>0 && context.state.members.map(memb=>(
-                                <MenuItem key={memb._id} value={memb._id}>{memb.memberName}</MenuItem>
-                            ))}
-                        </TextField>
-                    </>
+                        <div>
+                        <label>Relationship Type:</label>
+                        <select name="relationshipType" id="relationshipType" placeholder="choose relationship" 
+                                value={member.relationshipType}
+                                onChange={(ev)=>handleMemberChange('rsType',ev)}>
+                            <option value="#">-- Choose relationship type: --</option>
+                            <option value="Root">Root</option>
+                            <option value="Child">Child</option>
+                            <option value="Couple">Couple</option>
+                        </select>
+                        </div>
+                        <div>
+                        <label>Relationship With:</label>
+                        <select name="relationshipWith" id="relationshipWith" 
+                                value={member.relationshipWith}
+                                onChange={(ev)=>handleMemberChange('rsWith',ev)}>
+                            <option value="#">-- Choose relationship with: --</option>
+                            {!!context.state.members && context.state.members.length>0 && context.state.members.map(member=>{
+                                return <option value={member._id} key={member._id}>{member.memberName}</option>
+                            })}
+                        </select>
+                        </div>
+                        </>
                     }
                 </MemberRelationship>
             <MemberInfo>
                 <ProfileInfo>
-                <BDdiv>
                     {!!!memberId ?
-                        <TextField id="birth" label="Birth" type="date" InputLabelProps={{shrink: true,}} 
-                                    onChange={(ev)=>handleMemberChange('birth',ev)} /> :
-                        <TextField id="birth" label="Birth" type="date" value={member.birth} InputLabelProps={{shrink: true,}}  
-                                    onChange={(ev)=>handleMemberChange('birth',ev)}/>
+                        <BDdiv>
+                            <div>
+                                <label>Birth:</label>
+                                <input type="date" name="birth" placeholder="Enter birth date" onChange={(ev)=>handleMemberChange('birth',ev)}/> 
+                            </div>
+                            <p> ~ </p>
+                            <div>
+                                <label>Death:</label>
+                                <input type="date" name="death" placeholder="Enter death date" onChange={(ev)=>handleMemberChange('death',ev)}/>
+                            </div>
+                        </BDdiv>
+                        :
+                        <BDdiv>
+                            <div>
+                                <label>Birth:</label>
+                                <input type="date" name="birth" value={member.birth} onChange={(ev)=>handleMemberChange('birth',ev)}/>
+                            </div>
+                            <p> ~ </p>
+                            <div>
+                                <label>Death:</label>
+                                <input type="date" name="death" value={member.death} onChange={(ev)=>handleMemberChange('death',ev)}/>
+                            </div>
+                        </BDdiv>
                     }
-                    <p> - </p>
-                    {!!!memberId ?
-                        <TextField id="death" label="Death" type="date" InputLabelProps={{shrink: true,}} 
-                                    onChange={(ev)=>handleMemberChange('death',ev)} /> :
-                        <TextField id="death" label="Death" type="date" value={member.death} InputLabelProps={{shrink: true,}}  
-                                    onChange={(ev)=>handleMemberChange('death',ev)}/>
-                    }
-                </BDdiv>
                 <ProfileDiv>
+                    <label>Profile:</label>
                     {!!!memberId ?
-                    <TextField className={classes.profile} id="profile" label="Edit Member's Profile" 
-                                multiline minRows={10} maxRows={15} 
-                                placeholder="Enter profile" fullWidth={true} variant="filled"
-                                onChange={(ev)=>handleMemberChange('profile',ev)} /> :
-                    <TextField className={classes.profile} id="profile" label="Edit Member's Profile" 
-                                multiline minRows={10}  maxRows={15} 
-                                variant="filled" fullWidth={true} value={member.profile} 
-                                onChange={(ev)=>handleMemberChange('profile',ev)} />
+                        <textarea id="profile" name="profile" rows="10" cols="50" placeholder="Enter profile" onChange={(ev)=>handleMemberChange('profile',ev)}/>
+                        :
+                        <textarea id="profile" name="profile" rows="10" cols="50" value={member.profile} onChange={(ev)=>handleMemberChange('profile',ev)}/>
                     }
                 </ProfileDiv>
                 </ProfileInfo>
             </MemberInfo>
             </Form>
-            <PhotoDiv>
-            </PhotoDiv>
+            <PhotoDiv />
         </Wrapper>
     );
 }
 
 const Wrapper = styled.div`
-    max-width: 1200px;
+    min-width: 100vw;
     height: 100%;
 `;
 const HeadIMG = styled.div`
-    width: 1200px;
+    width: 100%;
     height: 300px;
     background-image: ${props =>`url(${props.bgImg})`};
     background-size:cover;
@@ -339,8 +321,12 @@ const IconContainer = styled.div`
 const MemberName = styled.div`
     padding-left: 20px;
     input{
-        height: 40px;
+        padding-left: 5px;
+        height: 60px;
         width: 400px;
+        background-color: lightgrey;
+        border:none;
+        border-bottom: 3px solid blue;
         font-size: 40px;
         font-weight: 700;
         opacity: 0.5;
@@ -359,28 +345,62 @@ const MemberInfo = styled.div`
     display: flex;
     flex-direction: row;
 `;
+const Button = styled.button`
+    margin-left: 50px;
+    width:360px;
+    height: 36px;
+    font-size: 28px;
+    font-weight: bold;
+    background-color: ${props=>props.disabled ? 'lightgrey' : 'blue'};
+    color: yellow; //${props=>props.disabled ? 'yellow' : 'white'};
+    border-radius: 5px;
+    box-shadow:  1px 1px 1px 1px rgba(0, 0, 0, 0.5);
+`;
 const Form = styled.div``;
 const ProfileInfo = styled.div`
     padding-left: 5px;
     width: 100%;
 `;
 const BDdiv = styled.div`
+    margin-top: 10px;
+    height: 40px;
     display:flex;
     flex-direction: row;
     align-items: center;
     justify-content:space-around;
     align-content: center;
-    input{
-        height:32px;
+    border-bottom: 1px solid lightgrey;
+    label{
         font-size:30px;
+        font-weight: bold;
+    }
+    input{
+        margin-bottom: 10px;
+        padding-left: 20px;
+        height:36px;
+        font-size:30px;
+        background-color: lightgrey;
+        border:none;
+        opacity: 0.6;
+        :focus{
+            border: 1px solid yellow;
+            opacity:1;
+        }
     }
 `;
 const ProfileDiv = styled.div`
+    margin-top:10px;
     display:flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content:center;
     align-content: center;
+    textarea{
+        width:100%;
+        height: 300px;
+        font-size: 18px;
+        background-color: lightgrey;
+    }
 `;
 const MemberRelationship = styled.div`
     margin-top: 190px;
@@ -393,14 +413,21 @@ const MemberRelationship = styled.div`
     align-items:center;
     justify-content: space-around;
     align-content: flex-start;
+    font-size: 28px;
+    font-weight: bold;
+    select{
+        height: 30px;
+        font-size:20px;
+        background-color: lightgrey;
+    }
 `;
 
 const PhotoDiv = styled.div`
-    margin-top: 10px;
+    /* margin-top: 10px;
     padding-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    background-color: lightcyan;
+    background-color: lightcyan; */
 `;
 export default ProfileEdit;

@@ -1,16 +1,8 @@
 import styled from 'styled-components';
-import { useContext,useEffect} from 'react';
+import { useContext,} from 'react';
 import {Link} from 'react-router-dom';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import ContactsIcon from '@material-ui/icons/Contacts';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { FcBusinessContact } from "react-icons/fc";
+import '../../Tooltip.css';
 import FamilyContext from '../../FamilyContext';
 import { DEFAULTMEMBERAVATAR } from '../../constant';
 import useFetchFamilyMembers from '../../hook/useFetchFamilyMembers';
@@ -25,42 +17,19 @@ const columns = [
     {id: 'relationship', label: 'Relationship', minWidth: 200, align:'center'}
 ];
 
-const useStyles = makeStyles({
-    root:{ width: '100%', align:'center', },
-    container:{ maxHeight: 440, },
-});
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    body: { fontSize: 16, },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover, },
-    },
-}))(TableRow);
-
 const FamilyList = () =>{
     const context = useContext(FamilyContext);
-    const classes = useStyles();
     useFetchFamilyMembers();
 
     return (
         <Wrapper>
-            <Paper className={classes.root}>
                 <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
                     {columns.map((column) => (
-                        <StyledTableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                        <Th key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
                         {column.label}
-                        </StyledTableCell>
+                        </Th>
                     ))}
                     </TableRow>
                 </TableHead>
@@ -68,40 +37,75 @@ const FamilyList = () =>{
                 <TableBody>
                     {context.state.members.map(member =>{
                     return(
-                        
-                        <StyledTableRow key={member._id}>
-                            <StyledTableCell key={member._id+'0'}>
-                                    <Tooltip title="Family member edit">
-                                    <IconButton  aria-label="Family member edit">
-                                        <Link to={`/edit/${member._id}`} ><ContactsIcon  fontSize="large" color="primary" /></Link>
-                                    </IconButton>
-                                    </Tooltip></StyledTableCell>
-                            <StyledTableCell key={member._id+'1'}><Link to={`/member/${member._id}`}><Img src={!!member.avatar ? member.avatar : DEFAULTMEMBERAVATAR} alt={member.memberName}/></Link></StyledTableCell>
-                            <StyledTableCell key={member._id+'2'}><Link to={`/member/${member._id}`}>{member.memberName}</Link></StyledTableCell>
-                            <StyledTableCell key={member._id+'3'}>{member.birth}~{member.death}</StyledTableCell>
-                            <StyledTableCell key={member._id+'4'}><textarea rows="8" cols="50" readOnly={true} defaultValue={member.profile} /></StyledTableCell>
-                            <StyledTableCell key={member._id+'5'}>{ member.relationshipType} {!!member.relationshipWith && member.relationshipWith!=="null" ? `of ${member.relationship.rsMemberName}` : ''}</StyledTableCell>
-                        </StyledTableRow >
+                        <TableRow key={member._id}>
+                            <TD key={member._id+'0'}>
+                                <div className="tooltip"> 
+                                    <span className="tooltiptext">Edit Member Profile</span>
+                                    <Link to={`/edit/${member._id}`} ><FcBusinessContact  size={40} /></Link>
+                                </div>
+                            </TD>
+                            <TD key={member._id+'1'}><Link to={`/member/${member._id}`}><Img src={!!member.avatar ? member.avatar : DEFAULTMEMBERAVATAR} alt={member.memberName}/></Link></TD>
+                            <TD key={member._id+'2'}><Link to={`/member/${member._id}`}>{member.memberName}</Link></TD>
+                            <TD key={member._id+'3'}>{member.birth}~{member.death}</TD>
+                            <TD key={member._id+'4'}><textarea rows="8" cols="50" readOnly={true} defaultValue={member.profile} /></TD>
+                            <TD key={member._id+'5'}>{ member.relationshipType} {!!member.relationshipWith && member.relationshipWith!=="null" ? `of ${member.relationship.rsMemberName}` : ''}</TD>
+                        </TableRow >
                     );
                 })}
                 </TableBody>
                 }
                 </Table>
-            </Paper>
         </Wrapper>
     );
 }
 
-
 const Wrapper = styled.div`
-    max-width: 1270px;
+    min-width: 100vw;
     background-image: url('/images/default/cloud.png');
     background-position: center;
+`;
+const Table = styled.table`
+    width:100%;
+    border: 2px solid black;
+    border-collapse: collapse;
+    tr:nth-child(even){ 
+        background-color:lightgrey;
+    };
+`;
+const TableRow = styled.tr``;
+const TableHead = styled.thead`
+    height: 60px;
+    background-color: #000;
+    color: white;
+    font-size: 24px;
+    align-items: center;
+    align-content: center;
+`;
+const Th = styled.th`
+    padding-top: 15px;
+    border: 1px solid black;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+`;
+const TableBody = styled.tbody``;
+const TD = styled.td`
+    border: 1px solid black;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    vertical-align: middle;
+    font-size: 20px;
+    font-weight: bold;
+    textarea{
+        width: 100%;
+        font-size: 14px;
+    }
 `;
 
 const Img = styled.img`
     width:100px;
     height:120px;
 `;
-const Button = styled.button``;
 export default FamilyList;

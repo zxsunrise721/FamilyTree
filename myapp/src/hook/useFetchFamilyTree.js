@@ -12,7 +12,6 @@ const useFetchFamilyTree = () =>{
             }
         }
         fetchTree();
-        
     },[]);
 }
 
