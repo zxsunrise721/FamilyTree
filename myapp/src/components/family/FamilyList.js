@@ -46,7 +46,7 @@ const FamilyList = () =>{
                             </TD>
                             <TD key={member._id+'1'}><Link to={`/member/${member._id}`}><Img src={!!member.avatar ? member.avatar : DEFAULTMEMBERAVATAR} alt={member.memberName}/></Link></TD>
                             <TD key={member._id+'2'}><Link to={`/member/${member._id}`}>{member.memberName}</Link></TD>
-                            <TD key={member._id+'3'}>{member.birth}~{member.death}</TD>
+                            <TD key={member._id+'3'}>{member.birth==="null"?"":member.birth}~{member.death==="null"?"":member.death}</TD>
                             <TD key={member._id+'4'}><textarea rows="8" cols="50" readOnly={true} defaultValue={member.profile} /></TD>
                             <TD key={member._id+'5'}>{ member.relationshipType} {!!member.relationshipWith && member.relationshipWith!=="null" ? `of ${member.relationship.rsMemberName}` : ''}</TD>
                         </TableRow >

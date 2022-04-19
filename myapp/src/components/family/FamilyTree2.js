@@ -96,10 +96,10 @@ const FamilyTree2 = () =>{
                 let i = familyMember.children.length;
                 for(let j=0;j<i;j++){
                     const childMember = familyMember.children[j].member;
-                    let childVertex = {x: vertex.x + 300, y: ccVertex.y + (j+1) * 140 };
+                    let childVertex = {x: vertex.x + 300, y: ccVertex.y + (j+1) * 140 - (j>1?(j-1)*160:0) };
                     const child = member(childVertex.x, childVertex.y, 
-                                        `birth: ${childMember.birth}`,
-                                        `death: ${childMember.death}`, 
+                                        `birth: ${childMember.birth==="null"?"":childMember.birth}`,
+                                        `death: ${childMember.death==="null"?"":childMember.death}`, 
                                         childMember.name, 
                                         !!childMember.avatar ? childMember.avatar : DEFAULTMEMBERAVATAR);
                     link(father, child,[{x: vertex.x + 140, y:childVertex.y + 70},]);

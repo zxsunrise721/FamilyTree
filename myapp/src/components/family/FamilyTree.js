@@ -53,9 +53,9 @@ Graph.registerEdge('org-edge',
                                 fill: 'none',
                                 strokeLinejoin: 'round',
                                 strokeWidth: 2,
-                                stroke: '#A2B1C3',
+                                stroke: 'blue', //'#A2B1C3',
                                 sourceMarker: null,
-                                targetMarker: null,}, },
+                                targetMarker: 'block',}, },
                     }, true,)
 
 const FamilyTree1 = () =>{
@@ -94,15 +94,20 @@ const FamilyTree1 = () =>{
             let ccVertex = vertex;
             if(!!familyMember.children && familyMember.children.length >0){
                 let i = familyMember.children.length;
+                let pathVertex = [];
                 for(let j=0;j<i;j++){
                     const childMember = familyMember.children[j].member;
-                    let childVertex = {x:ccVertex.x + j*300, y: vertex.y + 200}
+                    let childVertex = {x:ccVertex.x + j*300 - (j>1?(j-1)*280:0), y: vertex.y + 200}
                     const child = member(childVertex.x, childVertex.y, 
-                                        `birth: ${childMember.birth}`, 
-                                        `death: ${childMember.death}`, 
+                                        `birth: ${childMember.birth==="null"?"":childMember.birth}`, 
+                                        `death: ${childMember.death==="null"?"":childMember.death}`, 
                                         childMember.name, 
                                         !!childMember.avatar ? childMember.avatar : DEFAULTMEMBERAVATAR );
-                    link(father, child,[{x: ccVertex.x + 140 , y:childVertex.y - 30},{x: childVertex.x + 140, y: childVertex.y -30}]);
+                    let vertexX = childVertex.x +140;
+                    let vertexY = childVertex.y - 30;
+                    pathVertex.push({x:vertexX, y:vertexY});
+                    // link(father, child,[{x: ccVertex.x + 140 , y:childVertex.y - 30},{x: childVertex.x + 140, y: childVertex.y -30}]);
+                    link(father, child, pathVertex);
                     ccVertex = traverse(childMember,childVertex,child);
                 }
             }
