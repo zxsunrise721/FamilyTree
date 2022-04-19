@@ -49,6 +49,7 @@ const FamilyList = styled(Link)`
     
 `;
 const Button = styled.button`
+    margin-bottom: 20px;
     font-size: 32px;
     font-weight: bold;
     color: darkblue;

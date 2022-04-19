@@ -348,11 +348,11 @@ const MemberInfo = styled.div`
 const Button = styled.button`
     margin-left: 50px;
     width:360px;
-    height: 36px;
+    height: 42px;
     font-size: 28px;
     font-weight: bold;
     background-color: ${props=>props.disabled ? 'lightgrey' : 'blue'};
-    color: yellow; //${props=>props.disabled ? 'yellow' : 'white'};
+    color: ${props=>props.disabled ? 'blue' : 'yellow'};
     border-radius: 5px;
     box-shadow:  1px 1px 1px 1px rgba(0, 0, 0, 0.5);
 `;

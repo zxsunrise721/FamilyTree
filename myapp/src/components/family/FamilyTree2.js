@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import {useContext, useEffect} from 'react';
 import FamilyContext from '../../FamilyContext';
-import useFetchFamilyTree from '../../hook/useFetchFamilyTree';
 import { DEFAULTMEMBERAVATAR } from '../../constant';
 import '@antv/x6-react-shape';
 import { Graph, } from "@antv/x6";  // Cell, EdgeView, Vector
