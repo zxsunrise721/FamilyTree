@@ -13,6 +13,7 @@ const {
     createFamilyMember,  updateFamilyMember,
 } = require('./handle/handle');
 const { getFamilyTree, createFamilyTree, }= require('./handle/handleFamilyTree');
+const { login, register, resetPwd } = require('./handle/authService');
 
 app.get('/',(req,res)=>{
     console.log(`URL: ${req.url}`);
@@ -48,6 +49,11 @@ app.put('/api/family-member-update',updateFamilyMember)
 app.get('/api/get-family-tree/:familyId', getFamilyTree)
 app.get('/api/create-family-tree/:familyId', createFamilyTree)
 
+/**************************************************/
+/*************** login, register, reset ***********/
+app.post('/api/login', login)
+app.post('/api/register', register)
+app.post('/api/reset', resetPwd)
 
 /************************************************************************************************/
 app.get("*",(req,res)=>{

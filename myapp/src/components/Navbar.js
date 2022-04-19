@@ -3,6 +3,7 @@ import { useContext, } from 'react';
 import {Link} from 'react-router-dom';
 import FamilyContext from '../FamilyContext';
 import { ImTree } from "react-icons/im";
+import { FaUserCircle, FaRegUserCircle } from "react-icons/fa";
 import { MdList, MdAccountTree, MdGroupAdd, MdContacts } from "react-icons/md";
 
 const Navbar = () =>{
@@ -15,6 +16,7 @@ const Navbar = () =>{
     return(
         <Wrapper>
             <Container>
+                <LogoTool>
                 <Logo to="/">Family Tree App</Logo>
                 {!!family && <FamilyContainer onClick={handleClick}>{family.familyName}</FamilyContainer>}
                 <Toolbar>
@@ -43,6 +45,24 @@ const Navbar = () =>{
                                     : <MdContacts size={30} color="silver"/>}
                     </div>
                 </Toolbar>
+                </LogoTool>
+                <Loginbar>
+                    {/* <div className="tooltip">
+                        <span className="tooltiptext">Register</span>
+                        <FiUserPlus size={50} color="blue" />
+                    </div> */}
+                    {!!window.sessionStorage.getItem('current_user') ?
+                    <div className="tooltip">
+                        <span className="tooltiptext">Log out</span>
+                        <Link to={'/login'} ><FaUserCircle size={50} color="blue"/></Link>
+                    </div>
+                    :
+                    <div className="tooltip">
+                        <span className="tooltiptext">Log in</span>
+                        <Link to={'/login'} ><FaRegUserCircle size={50} color="grey"/></Link>
+                    </div>
+                    }
+                </Loginbar>
             </Container>
         </Wrapper>
     )
@@ -59,7 +79,14 @@ const Container = styled.div`
     background-color: #f0f0f0;
     align-items:center;
 `;
-
+const LogoTool = styled.div`
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    padding: 1rem 2rem;
+    background-color: #f0f0f0;
+    align-items:center;
+`;
 const Logo = styled(Link)`
     display: flex;
     align-items: center;
@@ -82,6 +109,15 @@ const FamilyContainer = styled.div`
 const Toolbar = styled.div`
     width: 250px;
     margin-left: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+`;
+
+const Loginbar = styled.div`
+    float: right;
+    width: 250px;
     display: flex;
     flex-direction: row;
     align-items: center;
