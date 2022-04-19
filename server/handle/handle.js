@@ -2,11 +2,15 @@ const fs = require('fs');
 const { SAVEIMAGEPATH, IMAGEPATH } = require('./constant');
 const Family = require('../db/Family');
 const FamilyMember = require('../db/FamilyMember');
+const MappingUserFamilies = require('../db/MappingUserFamilies');
+const User = require('../db/User');
 
 const createFamily = async (req, res, next) =>{
     try{
+        console.log(req.body);
         const familyName  = req.body.familyName;
         const showType = req.body.showType;
+        const userId = req.body.userId;
         // upload background-image file
         let img;
         if(!!req.files){
@@ -28,15 +32,32 @@ const createFamily = async (req, res, next) =>{
             if(!!data){
                 family = await process.updateBackgroundImage(family._id, `${imgpath}/${imgname}`);
             }
+
+            
         }
         process.close();
+
+        // console.log('family',family);
+        if(!!userId && !!family) {
+            console.log('1');
+            const userId = req.body.userId;
+            console.log('userId',userId);
+            newMapping ={ userId: userId, familyIds:[family._id.toString()]};
+            console.log('mapping input ',newMapping);
+
+            const mappingProcess = new MappingUserFamilies();
+            let map = await mappingProcess.newMapping(newMapping);
+            console.log('map:',map);
+        }
+
+        
 
         let _message = 'Family is created,' + !!img ? 'Background image is uploaded':'No background image uploaded!';
         let _bgImg = !!img ? {name:!!imgname?imgname:img.name,mimetype:img.mimetype, size:img.size} : '';
         let _data = {family: family, bgImg:_bgImg,};
         // send response
         return res.status(200).json({ status:200, message: _message, data: _data });
-    }catch(err){ res.status(500).json({ status:500, error:err}) };
+    }catch(err){console.log(err); res.status(500).json({ status:500, error:err}) };
 }
 
 const getFamilies = async (req, res) => {
@@ -44,6 +65,48 @@ const getFamilies = async (req, res) => {
         const process = new Family();
         await process.dbInstance();
         let families = await process.getFamilies();
+        process.close();
+        
+        let _message = `Got families of public show.`;
+        !!families && families.length === 0 ?
+            res.status(404).json({ status:404, message: _message, data: null }) :
+            res.status(200).json({ status:200, message: _message, data: families });
+    }catch(err){ res.status(500).json({ status:500, error:err}) };
+}
+
+const getFamiliesPublic = async (req, res) => {
+    try{
+        const process = new Family();
+        await process.dbInstance();
+        let families = await process.getFamiliesPublic();
+        process.close();
+        
+        let _message = `Got families of public show.`;
+        !!families && families.length === 0 ?
+            res.status(404).json({ status:404, message: _message, data: null }) :
+            res.status(200).json({ status:200, message: _message, data: families });
+    }catch(err){ res.status(500).json({ status:500, error:err}) };
+}
+
+const getFamiliesByUser = async(req,res) =>{
+    const userId = req.params.user;
+    try{
+        const process = new Family();
+        const mappingProcess = new MappingUserFamilies();
+        const userProcess = new User();
+        await process.dbInstance();
+
+        let role = await userProcess.getUserRole(userId);
+        let families = [];
+        if(role==='normal'){
+            // get families by user from mapping
+            let mapping = await mappingProcess.getMappingByUser(userId);
+            !!mapping ?
+                families = await process.getFamiliesByids(mapping.familyIds):
+                families = await process.getFamiliesPublic();
+        }else{
+            families = await process.getFamilies();
+        }
         process.close();
         
         let _message = `Got families of public show.`;
@@ -161,4 +224,11 @@ const updateFamilyMember = async (req, res) => {
 }
 
 
-module.exports  = { createFamily, getFamilies, getMemberByFamily, createFamilyMember, getMemberById, updateFamilyMember, }
+module.exports  = { createFamily, 
+                    getFamilies, 
+                    getFamiliesPublic, 
+                    getFamiliesByUser, 
+                    getMemberByFamily, 
+                    createFamilyMember, 
+                    getMemberById, 
+                    updateFamilyMember, }

@@ -1,31 +1,19 @@
 import styled from "styled-components";
-import {useState} from 'react';
+import {useState, useContext} from 'react';
+import UserContext from '../../UserContext';
 
 
 const RRegister = () => {
+    const uContext = useContext(UserContext);
     const [userData, setUserData] = useState({username:'',password:'',email:''});
     const [confirmPwd, setConfirmPwd] = useState('');
     const [errMsg, setErrMsg] = useState(null);
 
-    const handleSubmit = () =>{
+    const handleSubmit = async () =>{
         if(userData.password !== confirmPwd){ return; }
         else{
-            fetch('/api/register', {method: 'POST', 
-                            headers:{'Content-Type': 'application/json'}, 
-                            body: JSON.stringify(userData)})
-            .then(res=>res.json()).then(data=>{
-                setErrMsg(null);
-                if(data.status !== 200){
-                    setErrMsg(data.message);
-                }else{
-                    let result = data.data;
-                    if(!!result){
-                        window.localStorage.setItem('token', JSON.stringify(result.token));
-                        window.sessionStorage.setItem('current_user', JSON.stringify(result.userData));
-                        window.location.href = '/';
-                    }
-                }
-            }).catch(err=>console.error(err));
+            let isLogined = await uContext.login(userData);
+            if(isLogined){ window.location.href = '/'; }
         }
     }
     return(
@@ -42,7 +30,7 @@ const RRegister = () => {
                             onChange={(ev)=>setConfirmPwd(ev.target.value)} />
                     <LoginButton onClick={handleSubmit}>Register</LoginButton>
                 </InputBox>
-                {!!errMsg && <MsgBox>{errMsg}</MsgBox>}
+                {!!uContext.state.error && <MsgBox>{uContext.state.errMessage}</MsgBox>}
             </RightContent>
         </Wrapper>
     );

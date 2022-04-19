@@ -58,7 +58,31 @@ export const FamilyProvider = ({children}) =>{
     const fetchFamilies = async (isRefresh) =>{
         dispatch({type:'fetch-families'});
         if((!!isRefresh && state.FamiliesDataStatus === DATASTATUS.LOADED)||(state.FamiliesDataStatus === DATASTATUS.LOADING)){ 
+            let resp = await request('GET','/api/get-families');
+            if(resp.status===200){
+                !!resp.data && resp.data.length > 0 ?
+                    dispatch({type:'fetched-families', data: resp.data}):
+                    dispatch({type:'nofound-families'});
+            }else{ dispatch({type:'error-fetch-families', error:resp.message})}
+        }
+    }
+
+    const fetchFamiliesPublic = async (isRefresh) =>{
+        dispatch({type:'fetch-families'});
+        if((!!isRefresh && state.FamiliesDataStatus === DATASTATUS.LOADED)||(state.FamiliesDataStatus === DATASTATUS.LOADING)){ 
             let resp = await request('GET','/api/get-families-public');
+            if(resp.status===200){
+                !!resp.data && resp.data.length > 0 ?
+                    dispatch({type:'fetched-families', data: resp.data}):
+                    dispatch({type:'nofound-families'});
+            }else{ dispatch({type:'error-fetch-families', error:resp.message})}
+        }
+    }
+
+    const fetchFamiliesByUser = async (userId,isRefresh) =>{
+        dispatch({type:'fetch-families'});
+        if((!!isRefresh && state.FamiliesDataStatus === DATASTATUS.LOADED)||(state.FamiliesDataStatus === DATASTATUS.LOADING)){ 
+            let resp = await request('GET',`/api/get-families-user/${userId}`);
             if(resp.status===200){
                 !!resp.data && resp.data.length > 0 ?
                     dispatch({type:'fetched-families', data: resp.data}):
@@ -135,6 +159,8 @@ export const FamilyProvider = ({children}) =>{
     
     const values = { request, state, 
                     fetchFamilies, 
+                    fetchFamiliesPublic,
+                    fetchFamiliesByUser,
                     fetchMembers, 
                     setCurrentFamily, 
                     clearCurrentFamily, 

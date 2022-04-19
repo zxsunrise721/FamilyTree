@@ -1,28 +1,16 @@
 import styled from "styled-components";
-import {useState} from 'react';
+import {useState, useContext, useEffect} from 'react';
+import UserContext from "../../UserContext";
 
 const RLogin = () =>{
+    const uContext = useContext(UserContext);
     const [username, setUsername] = useState(null);
     const [pwd, setPwd] = useState(null);
-    const [errMsg, setErrMsg] = useState(null);
-    const handleClick = () =>{
+
+    const handleClick = async () =>{
         let userData = {username: username, password: pwd};
-        fetch('/api/login', {method: 'POST', 
-                            headers:{'Content-Type': 'application/json', 'Accept':'application/json',}, 
-                            body: JSON.stringify(userData)})
-            .then(res=>res.json()).then(data=>{
-                setErrMsg(null);
-                if(data.status !==200){
-                    setErrMsg(data.message);
-                }else{
-                    let result = data.data;
-                    if(!!result){
-                        window.localStorage.setItem('token', JSON.stringify(result.token));
-                        window.sessionStorage.setItem('current_user', JSON.stringify(result.userData));
-                        window.location.href = '/';
-                    }
-                }
-            }).catch(err=>console.error(err));
+        let isLogined = await uContext.login(userData);
+        if(isLogined){ window.location.href = '/'; }
     }
     return(
         <Wrapper>
@@ -37,7 +25,7 @@ const RLogin = () =>{
                 <RememberCheckbox className="remember"><span className="checked">Remember me</span></RememberCheckbox>
                 <span className="forget-pwd">forget password?</span>
             </Option>
-            {!!errMsg && <MsgBox>{errMsg}</MsgBox>}
+            {!!uContext.state.error && <MsgBox>{uContext.state.errMessage}</MsgBox>}
         </Wrapper>
     );
 }

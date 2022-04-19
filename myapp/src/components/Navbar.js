@@ -2,17 +2,20 @@ import styled from 'styled-components';
 import { useContext, } from 'react';
 import {Link} from 'react-router-dom';
 import FamilyContext from '../FamilyContext';
+import UserContext from '../UserContext';
 import { ImTree } from "react-icons/im";
 import { FaUserCircle, FaRegUserCircle } from "react-icons/fa";
 import { MdList, MdAccountTree, MdGroupAdd, MdContacts } from "react-icons/md";
 
 const Navbar = () =>{
     const context = useContext(FamilyContext);
+    const uContext = useContext(UserContext);
     const handleClick = () =>{
         context.clearCurrentFamily();
         window.location.href = '/';
     }
     const family = context.getCurrentFamily();
+    const curUser = uContext.getCurrentUser();
     return(
         <Wrapper>
             <Container>
@@ -22,7 +25,10 @@ const Navbar = () =>{
                 <Toolbar>
                     <div className="tooltip"> 
                         <span className="tooltiptext">Family Add</span>
-                        <Link to={'/create'} ><MdGroupAdd  size={30} color="blue"/></Link>
+                        {!!curUser ?
+                            <Link to={'/create'} ><MdGroupAdd  size={30} color="blue"/></Link>
+                            : <MdGroupAdd  size={30} color="silver"/>
+                        }
                     </div>
                     <div className="tooltip">
                         <span className="tooltiptext">Family List</span>
@@ -54,7 +60,7 @@ const Navbar = () =>{
                     {!!window.sessionStorage.getItem('current_user') ?
                     <div className="tooltip">
                         <span className="tooltiptext">Log out</span>
-                        <Link to={'/login'} ><FaUserCircle size={50} color="blue"/></Link>
+                        <Link to={'/'} onClick={()=>uContext.logout()} ><FaUserCircle size={50} color="blue"/></Link>
                     </div>
                     :
                     <div className="tooltip">

@@ -8,12 +8,19 @@ const app = express();
 
 const {uploadAvatar, uploadPhotos } = require('./handle/uploadHandle');     // test upload files
 const { 
-    createFamily, getFamilies, 
-    getMemberByFamily, getMemberById, 
-    createFamilyMember,  updateFamilyMember,
+    createFamily, 
+    getFamilies,
+    getFamiliesPublic, 
+    getFamiliesByUser,
+    getMemberByFamily, 
+    getMemberById, 
+    createFamilyMember,  
+    updateFamilyMember,
 } = require('./handle/handle');
 const { getFamilyTree, createFamilyTree, }= require('./handle/handleFamilyTree');
 const { login, register, resetPwd } = require('./handle/authService');
+const { getMappings, getMapping, getMappingByUser, createMappingByUser} = require('./handle/handleMapping');
+
 
 app.get('/',(req,res)=>{
     console.log(`URL: ${req.url}`);
@@ -39,13 +46,17 @@ app.post('/upload-avatar', uploadAvatar)
 app.post('/upload-photos', uploadPhotos)
 /*-------------------------------- finished test api -------------------------------------------*/
 
-app.get('/api/get-families-public', getFamilies)
+/*************** handle family process ************************/
+app.get('/api/get-families', getFamilies)
+app.get('/api/get-families-public', getFamiliesPublic)
+app.get('/api/get-families-user/:user', getFamiliesByUser)
 app.post('/api/family-create',createFamily)
+/*************** handle family member process *****************/
 app.get('/api/get-family-members/:familyId', getMemberByFamily)
 app.get('/api/get-family-member/:memberId',getMemberById)
 app.post('/api/family-member-create',createFamilyMember)
 app.put('/api/family-member-update',updateFamilyMember)
-
+/*************** handle family tree process ******************/
 app.get('/api/get-family-tree/:familyId', getFamilyTree)
 app.get('/api/create-family-tree/:familyId', createFamilyTree)
 
@@ -54,6 +65,13 @@ app.get('/api/create-family-tree/:familyId', createFamilyTree)
 app.post('/api/login', login)
 app.post('/api/register', register)
 app.post('/api/reset', resetPwd)
+
+/**********************************************************/
+/*************** handle user & families mapping ***********/
+app.get('/api/get-mappings', getMappings)
+app.get('/api/get-mapping-id/:id', getMapping)
+app.get('/api/get-mapping-user/:userId', getMappingByUser)
+app.post('/api/create-mapping-user', createMappingByUser)
 
 /************************************************************************************************/
 app.get("*",(req,res)=>{

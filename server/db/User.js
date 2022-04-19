@@ -61,6 +61,7 @@ module.exports = class User extends DBPool {
         if(!this.isConnected){ await this.dbInstance();}
         let userId;
         try{
+            newUser = {...newUser, role:'normal'};
             this.startTransaction();
             let result = await this.userColl.insertOne(newUser);
             userId = result.insertedId;
@@ -81,5 +82,12 @@ module.exports = class User extends DBPool {
             user = result.modifiedCount>0 ? await this.userColl.findOne({_id: ObjectId(user._id)}) : null;
         }catch(e){ this.session.abortTransaction(); console.error(e);}
         return user;
+    }
+
+    async getUserRole(_id){
+        if(!this.isConnected){ await this.dbInstance();}
+        _id = typeof _id === 'string' ? ObjectId(_id) : _id;
+        let user = await this.getUser(_id);
+        return !!user.role ? user.role : 'normal';
     }
 }

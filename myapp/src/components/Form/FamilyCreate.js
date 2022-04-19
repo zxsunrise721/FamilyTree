@@ -1,19 +1,23 @@
 import styled from 'styled-components';
-import {useState} from 'react';
+import {useState, useContext } from 'react';
+import UserContext from '../../UserContext';
+
 
 const FamilyCreate = () =>{
+    const uContext = useContext(UserContext);
     const [file, setFile] = useState(null);
     const [familyName, setFamilyName] = useState(null);
-    const [type, setType] = useState(null);
+    const [type, setType] = useState('public');
     const [msg, setMsg] = useState(null);
     
     const handleSubmit = (ev) =>{
-        console.log(type);
         ev.preventDefault();
         let formData = new FormData();
         formData.append("backgroundImage",file);
         formData.append("familyName", familyName);
-        formData.append("showType",!!type?type:'public');
+        formData.append("showType",type);
+        let curUser = uContext.getCurrentUser();
+        if(!!curUser){formData.append("userId",curUser.id);}
         try{
             fetch('/api/family-create', {
             method: 'POST',
@@ -22,7 +26,6 @@ const FamilyCreate = () =>{
                 .then(resp=>{
                     setMsg(resp.message);
                     let respData = resp.data;
-                    console.log('message: ',resp.message, 'data: ',resp.data);
                     window.sessionStorage.setItem('current-family', JSON.stringify(respData.family));
                     window.location.href = '/';
                 });
@@ -40,7 +43,7 @@ const FamilyCreate = () =>{
                     </InputGroup>
                     <InputGroup>
                         <label>Family Tree Show Type:</label>
-                        <select name="family-tree-show-type" default="public" onSelect={(ev)=>setType(ev.target.value)}>
+                        <select name="family-tree-show-type" onChange={(ev)=>setType(ev.target.value)}>
                             <option value="public">public</option>
                             <option value="private">private</option>
                         </select>

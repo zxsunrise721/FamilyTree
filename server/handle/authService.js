@@ -58,7 +58,10 @@ const login = async (req, res, next) => {
         else{ 
             // jwt, payload need data in sign token
             const token = jwt.sign({ username }, PRIVATE_KEY, { expiresIn: JWT_EXPIRED});
-            let userData = { id: userAuth._id, username: userAuth.username, email: userAuth.email };
+            let userData = { id: userAuth._id, 
+                            username: userAuth.username, 
+                            email: userAuth.email, 
+                            role: !!userAuth.role ? userAuth.role : 'normal' };
             sendResponse(res, CODE_SUCCESS ,{ token, userData },`success to login by user:${username}`);
         }
     }
@@ -86,7 +89,10 @@ const register = async (req, res, next) => {
             if(!!!newUser){ return sendResponse(res,CODE_ERROR,null,`Failure to register user[${username}]`); }
             else{
                 const token = jwt.sign({ username }, PRIVATE_KEY, { expiresIn: JWT_EXPIRED});
-                let userData = { id: newUser._id, username: newUser.username, email: newUser.email };
+                let userData = { id: userAuth._id, 
+                    username: userAuth.username, 
+                    email: userAuth.email, 
+                    role: !!userAuth.role ? userAuth.role : 'normal' };
                 sendResponse(res, CODE_SUCCESS ,{ token, userData },`success to register user[${username}`);
             }
         }
@@ -115,7 +121,10 @@ const resetPwd = async (req, res, next) => {
             if(!!!userAuth){ return sendResponse(res,CODE_ERROR,null,'Failure to reset password!');}
             else{
                 const token = jwt.sign({ username }, PRIVATE_KEY, { expiresIn: JWT_EXPIRED});
-                let userData = { id: userAuth._id, username: userAuth.username, email: userAuth.email };
+                let userData = { id: userAuth._id, 
+                    username: userAuth.username, 
+                    email: userAuth.email, 
+                    role: !!userAuth.role ? userAuth.role : 'normal' };
                 sendResponse(res, CODE_SUCCESS ,{ token, userData },`success to reset password!`);
             }
         }
