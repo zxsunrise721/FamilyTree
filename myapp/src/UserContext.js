@@ -73,6 +73,7 @@ export const UserProvider = ({children}) =>{
      * @returns logined = true;
      */
     async function register(userData){
+        console.log("register",userData);
         const res = await fetch('/api/register', 
                             {method: 'POST', 
                             headers:{'Content-Type': 'application/json', 'Accept':'application/json',}, 

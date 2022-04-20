@@ -7,12 +7,11 @@ const RRegister = () => {
     const uContext = useContext(UserContext);
     const [userData, setUserData] = useState({username:'',password:'',email:''});
     const [confirmPwd, setConfirmPwd] = useState('');
-    const [errMsg, setErrMsg] = useState(null);
 
     const handleSubmit = async () =>{
         if(userData.password !== confirmPwd){ return; }
         else{
-            let isLogined = await uContext.login(userData);
+            let isLogined = await uContext.register(userData);
             if(isLogined){ window.location.href = '/'; }
         }
     }
