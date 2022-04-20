@@ -57,8 +57,9 @@ const Navbar = () =>{
                         <span className="tooltiptext">Register</span>
                         <FiUserPlus size={50} color="blue" />
                     </div> */}
-                    {!!window.sessionStorage.getItem('current_user') ?
+                    {!!curUser ?
                     <div className="tooltip">
+                        <UserName>{curUser.username}</UserName>
                         <span className="tooltiptext">Log out</span>
                         <Link to={'/'} onClick={()=>uContext.logout()} ><FaUserCircle size={50} color="blue"/></Link>
                     </div>
@@ -128,6 +129,12 @@ const Loginbar = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
+`;
+
+const UserName = styled.span`
+    font-size: 24px;
+    font-weight: bold;
+    color:blue;
 `;
 
 export default Navbar;
