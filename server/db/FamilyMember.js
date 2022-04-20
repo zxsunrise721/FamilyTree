@@ -9,6 +9,11 @@ module.exports = class FamilyMember extends DBPool {
         this.memberColl = this.client.db(this.dbname).collection(FamilyMember.COLLECTIONNAME);
     }
 
+    /**
+     * 
+     * @param {*} familyId 
+     * @returns members by family
+     */
     async getMembersByFamily(familyId){
         if(!this.isConnected){await this.dbInstance();}
         familyId = typeof familyId === 'string' ? ObjectId(familyId) : familyId;
@@ -19,6 +24,11 @@ module.exports = class FamilyMember extends DBPool {
         return members;
     }
 
+    /**
+     * 
+     * @param {*} familyId 
+     * @returns the root of member by family
+     */
     async getRootMembersByFamily(familyId){
         if(!this.isConnected){await this.dbInstance();}
         familyId = typeof familyId === 'string' ? ObjectId(familyId) : familyId;
@@ -29,6 +39,11 @@ module.exports = class FamilyMember extends DBPool {
         return member;
     }
 
+    /**
+     * 
+     * @param {*} memberId 
+     * @returns member with his id
+     */
     async getMember(memberId){
         if(!this.isConnected){await this.dbInstance();}
         memberId = typeof memberId === 'string' ? ObjectId(memberId) : memberId;
@@ -39,6 +54,11 @@ module.exports = class FamilyMember extends DBPool {
         return member;
     }
 
+    /**
+     * 
+     * @param {*} memberId 
+     * @returns member's relation members
+     */
     async getRelationMember(memberId){
         if(!this.isConnected){await this.dbInstance();}
         memberId = typeof memberId === 'string' ? ObjectId(memberId) : memberId;
@@ -49,6 +69,11 @@ module.exports = class FamilyMember extends DBPool {
         return members;
     }
 
+    /**
+     * create member in family
+     * @param {*} newMember 
+     * @returns new member
+     */
     async createFamilyMember(newMember){
         if(!this.isConnected){await this.dbInstance();}
         let member;
@@ -81,6 +106,11 @@ module.exports = class FamilyMember extends DBPool {
         return member;
     }
 
+    /**
+     * update member's infomation in current family
+     * @param {*} newMember 
+     * @returns an updated member
+     */
     async updateFamilyMember(newMember){
         if(!this.isConnected){await this.dbInstance();}
         let member;
@@ -98,9 +128,7 @@ module.exports = class FamilyMember extends DBPool {
             let oldRsWith = member.relationshipWith;
             // update member
             delete newMember._id;
-            console.log(newMember);
             let result = await this.memberColl.updateOne({_id: ObjectId(_id)},{$set: newMember});
-            console.log(result);
             // processing relationship
             if(!!newMember.relationshipType && newMember.relationshipType==='Child'){
                 if(!!rsMember){
@@ -120,6 +148,12 @@ module.exports = class FamilyMember extends DBPool {
         return member;
     }
 
+    /**
+     * update member's avatar src
+     * @param {*} memberId 
+     * @param {*} avatarSrc 
+     * @returns an updated member
+     */
     async updateMemberAvatar(memberId, avatarSrc){
         if(!this.isConnected){await this.dbInstance();}
         memberId = typeof memberId === 'string' ? ObjectId(memberId) : memberId;

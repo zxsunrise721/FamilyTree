@@ -2,6 +2,12 @@ const Family = require('../db/Family');
 const FamilyMember = require('../db/FamilyMember');
 const FamilyTree = require('../db/FamilyTree');
 
+/**
+ * get a family tree, when the database not exists, create it.
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const getFamilyTree = async (req, res, next) => {
     const familyId = req.params.familyId;
 
@@ -15,6 +21,12 @@ const getFamilyTree = async (req, res, next) => {
         res.status(404).json({status:404,data:null, message:'create family tree failed!'});
 }
 
+/**
+ * create a new family tree
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const createFamilyTree = async (req,res,next) =>{
     const familyId = req.params.familyId;
     let process = new FamilyTree();

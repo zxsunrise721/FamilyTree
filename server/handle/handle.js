@@ -2,11 +2,22 @@ const fs = require('fs');
 const { SAVEIMAGEPATH, IMAGEPATH } = require('./constant');
 const Family = require('../db/Family');
 const FamilyMember = require('../db/FamilyMember');
+const MappingUserFamilies = require('../db/MappingUserFamilies');
+const User = require('../db/User');
 
+/**
+ * create a new family
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns response
+ */
 const createFamily = async (req, res, next) =>{
     try{
+        console.log(req.body);
         const familyName  = req.body.familyName;
         const showType = req.body.showType;
+        const userId = req.body.userId;
         // upload background-image file
         let img;
         if(!!req.files){
@@ -28,17 +39,31 @@ const createFamily = async (req, res, next) =>{
             if(!!data){
                 family = await process.updateBackgroundImage(family._id, `${imgpath}/${imgname}`);
             }
+
+            
+        }
+        
+        if(!!userId && !!family) {
+            const userId = req.body.userId;
+            newMapping ={ userId: userId, familyIds:[family._id.toString()]};
+            const mappingProcess = new MappingUserFamilies();
+            let map = await mappingProcess.newMapping(newMapping);
         }
         process.close();
-
+        
         let _message = 'Family is created,' + !!img ? 'Background image is uploaded':'No background image uploaded!';
         let _bgImg = !!img ? {name:!!imgname?imgname:img.name,mimetype:img.mimetype, size:img.size} : '';
         let _data = {family: family, bgImg:_bgImg,};
         // send response
         return res.status(200).json({ status:200, message: _message, data: _data });
-    }catch(err){ res.status(500).json({ status:500, error:err}) };
+    }catch(err){console.log(err); res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get all families
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getFamilies = async (req, res) => {
     try{
         const process = new Family();
@@ -53,6 +78,64 @@ const getFamilies = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get all public families
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getFamiliesPublic = async (req, res) => {
+    try{
+        const process = new Family();
+        await process.dbInstance();
+        let families = await process.getFamiliesPublic();
+        process.close();
+        
+        let _message = `Got families of public show.`;
+        !!families && families.length === 0 ?
+            res.status(404).json({ status:404, message: _message, data: null }) :
+            res.status(200).json({ status:200, message: _message, data: families });
+    }catch(err){ res.status(500).json({ status:500, error:err}) };
+}
+
+/**
+ * get families that belong to current user
+ * their include all public families
+ * @param {*} req 
+ * @param {*} res 
+ */
+const getFamiliesByUser = async(req,res) =>{
+    const userId = req.params.user;
+    try{
+        const process = new Family();
+        const mappingProcess = new MappingUserFamilies();
+        const userProcess = new User();
+        await process.dbInstance();
+
+        let role = await userProcess.getUserRole(userId);
+        let families = [];
+        if(role==='normal'){
+            // get families by user from mapping
+            let mapping = await mappingProcess.getMappingByUser(userId);
+            !!mapping ?
+                families = await process.getFamiliesByids(mapping.familyIds):
+                families = await process.getFamiliesPublic();
+        }else{
+            families = await process.getFamilies();
+        }
+        process.close();
+        
+        let _message = `Got families of public show.`;
+        !!families && families.length === 0 ?
+            res.status(404).json({ status:404, message: _message, data: null }) :
+            res.status(200).json({ status:200, message: _message, data: families });
+    }catch(err){ res.status(500).json({ status:500, error:err}) };
+}
+
+/**
+ * get all members that belong to current family
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMemberByFamily = async (req, res) => {
     const familyId = req.params.familyId
     try{
@@ -68,6 +151,11 @@ const getMemberByFamily = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get member with member id
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMemberById = async (req, res) => {
     const memberId = req.params.memberId;
     try{
@@ -83,6 +171,11 @@ const getMemberById = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * create member in current family
+ * @param {*} req 
+ * @param {*} res 
+ */
 const createFamilyMember = async (req, res) => {
     try{
         let memberObj = {   familyId:req.body.familyId, 
@@ -118,6 +211,13 @@ const createFamilyMember = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * process update image files
+ * @param {*} files 
+ * @param {*} familyId 
+ * @param {*} _id 
+ * @returns the image src
+ */
 function processUploadFile(files, familyId, _id){
     let src;
     let img = files.avatar;
@@ -133,9 +233,12 @@ function processUploadFile(files, familyId, _id){
     return src;
 }
 
+/**
+ * update member's information 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const updateFamilyMember = async (req, res) => {
-    // console.log('body',req.body);
-    // console.log('file',req.files);
     try{
         let memberObj = { _id: req.body._id, }
         if(!!req.body.memberName){memberObj = {...memberObj, memberName: req.body.memberName};}
@@ -161,4 +264,11 @@ const updateFamilyMember = async (req, res) => {
 }
 
 
-module.exports  = { createFamily, getFamilies, getMemberByFamily, createFamilyMember, getMemberById, updateFamilyMember, }
+module.exports  = { createFamily, 
+                    getFamilies, 
+                    getFamiliesPublic, 
+                    getFamiliesByUser, 
+                    getMemberByFamily, 
+                    createFamilyMember, 
+                    getMemberById, 
+                    updateFamilyMember, }

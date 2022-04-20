@@ -59,7 +59,42 @@ module.exports = class Family extends DBPool{
         }catch(err){console.error(err);}
         return families;
     }
+    /**
+     * 
+     * @returns array of families by show type is public
+     */
+    async getFamiliesPublic(){
+        if(!this.isConnected){await this.dbInstance();}
+        let families = [];
+        try{
+            families = await this.familyColl.find({showType:'public'}).toArray();
+        }catch(err){console.error(err);}
+        return families;
+    }
 
+    /**
+     * 
+     * @param {array of families' id} familyIds 
+     * @returns array of families
+     */
+    async getFamiliesByids(familyIds){
+        if(!this.isConnected){await this.dbInstance();}
+        let families = [];
+        try{
+            
+            families = await this.familyColl.find({_id: {$in: familyIds}}).toArray();
+            let _public_families = await this.getFamiliesPublic();
+            families.push(..._public_families);
+        }catch(err){console.error(err);}
+        return families;
+    }
+
+    /**
+     * update backgroundImage's src
+     * @param {*} familyId 
+     * @param {*} imagePath 
+     * @returns 
+     */
     async updateBackgroundImage(familyId, imagePath){
         if(!this.isConnected){await this.dbInstance();}
         let family;

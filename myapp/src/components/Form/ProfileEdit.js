@@ -88,7 +88,7 @@ const ProfileEdit = () =>{
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
-        if(!!member.memberName){
+        if(!!!member.memberName){
             alert('Member must be enter!');
             return;
         }
@@ -127,17 +127,14 @@ const ProfileEdit = () =>{
             if(item==='relationshipWith'){formData.append('relationshipWith', member.relationshipWith);}
         })
         try{
-            try{
-                fetch('/api/family-member-update', {
+            fetch('/api/family-member-update', {
                 method: 'PUT',
                 body: formData,
                 }).then(res=>res.json())
                     .then(resp=>{
                         let respData = resp.data;
-                        console.log('message: ',resp.message, 'data: ',respData);
                         window.location.href = `/member/${respData._id}`;
                     });
-            }catch(err){console.error(err)};
         }catch(err){console.error(err)};
     }
 

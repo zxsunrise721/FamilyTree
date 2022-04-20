@@ -5,6 +5,11 @@ import '@antv/x6-react-shape';
 import { Graph,} from "@antv/x6";
 import { DEFAULTMEMBERAVATAR } from '../../constant';
 
+/**
+ * register a node to graph,
+ * node's attributes
+ * node include tagNames, and their attributes
+ */
 Graph.registerNode('org-node',
     { width: 280, height: 140,
         markup: [{tagName: 'rect',selector: 'body', },
@@ -46,6 +51,10 @@ Graph.registerNode('org-node',
                     fontWeight: '800',
                     textAnchor: 'end',},},
     },true, )
+/**
+ * register a edge to graph
+ * edge's attributes
+ */
 Graph.registerEdge('org-edge',
                     {zIndex: -1,
                         attrs: {
@@ -53,15 +62,17 @@ Graph.registerEdge('org-edge',
                                 fill: 'none',
                                 strokeLinejoin: 'round',
                                 strokeWidth: 2,
-                                stroke: '#A2B1C3',
+                                stroke: 'blue', //'#A2B1C3',
                                 sourceMarker: null,
-                                targetMarker: null,}, },
+                                targetMarker: 'block',}, },
                     }, true,)
 
 const FamilyTree1 = () =>{
     const context = useContext(FamilyContext);
-    // useFetchFamilyTree();
     useEffect(()=>{
+        /**
+         * define a graph with document's element by 'container' id.
+         */
         const graph = new Graph({
             container: document.getElementById('container'),
             connecting:{ anchor: 'orth',},
@@ -78,6 +89,16 @@ const FamilyTree1 = () =>{
                 zoomAtMousePosition: true,
             }
         });
+        /**
+         * draw a node
+         * @param {vertex} x 
+         * @param {vertex} y 
+         * @param {your define content} birth 
+         * @param {your define content} death 
+         * @param {your define content} name 
+         * @param {your define image src} image 
+         * @returns 
+         */
         function member(x, y, birth, death, name, image) {
             return graph.addNode({ x, y,shape: 'org-node',
                     attrs: { avatar: {opacity: 1.0, 'xlink:href': image,},
@@ -86,29 +107,51 @@ const FamilyTree1 = () =>{
                             name: {text: name,fontSize: 16,fontFamily: 'Arial',letterSpacing: 0, }, },
                     })
         }
+        /**
+         * draw a edage from source to target and path those vertex
+         * @param {object of source} source 
+         * @param {object of target} target 
+         * @param {their vertex of path } vertices 
+         * @returns 
+         */
         function link(source, target, vertices) {
             return graph.addEdge({ vertices, source: { cell: source,}, target: {cell: target,}, shape: 'org-edge', })
         }
 
+        /**
+         * depences family tree's node to draw the whole family tree
+         * @param {family member} familyMember 
+         * @param {their vertex} vertex 
+         * @param {father node} father 
+         * @returns 
+         */
         function traverse(familyMember, vertex, father){
             let ccVertex = vertex;
             if(!!familyMember.children && familyMember.children.length >0){
                 let i = familyMember.children.length;
+                let pathVertex = [];
                 for(let j=0;j<i;j++){
                     const childMember = familyMember.children[j].member;
-                    let childVertex = {x:ccVertex.x + j*300, y: vertex.y + 200}
+                    let childVertex = {x:ccVertex.x + j*300 - (j>1?(j-1)*280:0), y: vertex.y + 200}
                     const child = member(childVertex.x, childVertex.y, 
-                                        `birth: ${childMember.birth}`, 
-                                        `death: ${childMember.death}`, 
+                                        `birth: ${childMember.birth==="null"?"":childMember.birth}`, 
+                                        `death: ${childMember.death==="null"?"":childMember.death}`, 
                                         childMember.name, 
                                         !!childMember.avatar ? childMember.avatar : DEFAULTMEMBERAVATAR );
-                    link(father, child,[{x: ccVertex.x + 140 , y:childVertex.y - 30},{x: childVertex.x + 140, y: childVertex.y -30}]);
+                    let vertexX = childVertex.x +140;
+                    let vertexY = childVertex.y - 30;
+                    pathVertex.push({x:vertexX, y:vertexY});
+                    // link(father, child,[{x: ccVertex.x + 140 , y:childVertex.y - 30},{x: childVertex.x + 140, y: childVertex.y -30}]);
+                    link(father, child, pathVertex);
                     ccVertex = traverse(childMember,childVertex,child);
                 }
             }
             return ccVertex;
         }
         
+        /**
+         * exec to draw
+         */
         let tree = context.getCurrentFamilyTree();
         if(!!tree){
             const vertex = {x:400, y:50};

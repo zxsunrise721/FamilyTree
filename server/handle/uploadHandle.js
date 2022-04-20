@@ -1,6 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 
+/***************This is the test service *******************/
 uploadFile = (req, res, next) =>{
     console.log(req);
     const {file} = req.file;
