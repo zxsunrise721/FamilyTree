@@ -39,6 +39,12 @@ module.exports = class User extends DBPool {
         return user;
     }
 
+    /**
+     * 
+     * @param {*} userName 
+     * @param {*} password 
+     * @returns an user
+     */
     async getUserByNameAndPwd(userName, password){
         if(!this.isConnected){ await this.dbInstance();}
         let user;
@@ -48,6 +54,11 @@ module.exports = class User extends DBPool {
         return user;
     }
 
+    /**
+     * 
+     * @param {*} userName 
+     * @returns an user
+     */
     async getUserByName(userName){
         if(!this.isConnected){ await this.dbInstance();}
         let user;
@@ -57,6 +68,11 @@ module.exports = class User extends DBPool {
         return user;
     }
 
+    /**
+     * create a new user
+     * @param {*} newUser 
+     * @returns a new user
+     */
     async createUser(newUser){
         if(!this.isConnected){ await this.dbInstance();}
         let userId;
@@ -71,6 +87,12 @@ module.exports = class User extends DBPool {
         return user;
     }
 
+    /**
+     * modify password
+     * @param {*} username 
+     * @param {*} newPassword 
+     * @returns an updated user
+     */
     async updateUserPassword(username, newPassword) {
         if(!this.isConnected){ await this.dbInstance();}
         let user;
@@ -84,6 +106,11 @@ module.exports = class User extends DBPool {
         return user;
     }
 
+    /**
+     * 
+     * @param {*} _id 
+     * @returns role: 'admin' or 'normal'-default
+     */
     async getUserRole(_id){
         if(!this.isConnected){ await this.dbInstance();}
         _id = typeof _id === 'string' ? ObjectId(_id) : _id;

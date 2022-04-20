@@ -9,6 +9,10 @@ module.exports = class MappingUserFamilies extends DBPool {
         this.mappingColl = this.client.db(this.dbname).collection(MappingUserFamilies.COLLECTIONNAME);
     }
 
+    /**
+     * mapping of user and family, their is the user in which the families
+     * @returns all mappings
+     */
     async getMappings(){
         if(!this.isConnected){await this.dbInstance();}
         let mappings = [];
@@ -16,6 +20,11 @@ module.exports = class MappingUserFamilies extends DBPool {
         return mappings;
     }
 
+    /**
+     * 
+     * @param {*} _id 
+     * @returns mapping
+     */
     async getMapping(_id){
         if(!this.isConnected){await this.dbInstance();}
         _id = typeof _id=== 'string' ? ObjectId(_id) : _id; 
@@ -24,6 +33,11 @@ module.exports = class MappingUserFamilies extends DBPool {
         return mapping;
     }
 
+    /**
+     * 
+     * @param {*} userId 
+     * @returns mapping by user
+     */
     async getMappingByUser(userId){
         if(!this.isConnected){await this.dbInstance();}
         userId = typeof userId === 'string' ? ObjectId(userId) : userId;
@@ -31,6 +45,11 @@ module.exports = class MappingUserFamilies extends DBPool {
         return mapping;
     }
 
+    /**
+     * create a new mapping with user
+     * @param {*} newMapping 
+     * @returns a new mapping
+     */
     async newMapping(newMapping){
         if(!this.isConnected){await this.dbInstance();}
         let mapping;
@@ -44,6 +63,12 @@ module.exports = class MappingUserFamilies extends DBPool {
         return mapping;
     }
 
+    /**
+     * update(add) families to current mapping by user
+     * @param {*} userId 
+     * @param {*} familyIds 
+     * @returns an updated mapping
+     */
     async updateMappingByUser(userId, familyIds){
         if(!this.isConnected){await this.dbInstance();}
         let mapping;
@@ -64,6 +89,12 @@ module.exports = class MappingUserFamilies extends DBPool {
         return mapping;
     }
 
+    /**
+     * update(add) families to current mapping with mapping id
+     * @param {*} userId 
+     * @param {*} familyIds 
+     * @returns an updated mapping
+     */
     async updateMapping(_id, familyIds){
         if(!this.isConnected){await this.dbInstance();}
         let mapping;

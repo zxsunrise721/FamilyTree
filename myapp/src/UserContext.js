@@ -47,6 +47,11 @@ const UserContext = createContext(null);
 export const UserProvider = ({children}) =>{
     const [state, dispatch] = useReducer(reducer,initialState);
 
+    /**
+     * save current user and token
+     * @param {*} userData 
+     * @returns logined = true
+     */
     async function login(userData){
         const res = await fetch('/api/login', 
                             {method: 'POST', 
@@ -62,6 +67,11 @@ export const UserProvider = ({children}) =>{
         }
     }
 
+    /**
+     * create a new user and auto save current user on front
+     * @param {*} userData 
+     * @returns logined = true;
+     */
     async function register(userData){
         const res = await fetch('/api/register', 
                             {method: 'POST', 
@@ -77,11 +87,18 @@ export const UserProvider = ({children}) =>{
         }
     }
 
+    /**
+     * action: logout
+     */
     function logout(){
         dispatch({type:'logout'});
         window.location.href = '/';
     }
 
+    /**
+     * 
+     * @returns current user
+     */
     function getCurrentUser(){
         let user;
         user = !!state.curUser ? 

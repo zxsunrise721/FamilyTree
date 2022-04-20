@@ -13,6 +13,11 @@ module.exports = class FamilyTree extends DBPool {
         this.processFamilyMember = new FamilyMember();
     }
 
+    /**
+     * create a tree of fmaily
+     * @param {*} familyId 
+     * @returns family tree
+     */
     async makeFamilyTree(familyId){
         if(!this.isConnected){await this.dbInstance();}
         let treeObj = { _id:ObjectId(familyId) };
@@ -35,6 +40,12 @@ module.exports = class FamilyTree extends DBPool {
         return tree;
     }
 
+    /**
+     * nest children into a tree
+     * @param {*} lastNode 
+     * @param {*} children 
+     * @returns 
+     */
     childrenTree(lastNode, children){
         let childrenArr = [];
         children.forEach(child=>{
@@ -53,6 +64,11 @@ module.exports = class FamilyTree extends DBPool {
         return lastNode;
     }
 
+    /**
+     * 
+     * @param {*} familyId 
+     * @returns the family tree
+     */
     async getFamilyTree(familyId){
         if(!this.isConnected){await this.dbInstance();}
         let tree = await this.treeColl.findOne({_id:ObjectId(familyId)});

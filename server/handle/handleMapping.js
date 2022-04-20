@@ -1,6 +1,11 @@
 const MappingUserFamilies = require('../db/MappingUserFamilies');
 const { sendResponse } = require('../helper');
 
+/**
+ * get all mappings
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMappings = async (req,res) =>{
     try{
         const process = new MappingUserFamilies();
@@ -13,6 +18,11 @@ const getMappings = async (req,res) =>{
     }catch(err){console.error(err);}
 }
 
+/**
+ * get mapping by mapping id
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMapping = async (req,res) =>{
     const id = req.params.id;
     try{
@@ -26,6 +36,11 @@ const getMapping = async (req,res) =>{
     }catch(err){console.error(err);}
 }
 
+/**
+ * get mapping by user
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMappingByUser = async (req,res) =>{
     const userId = req.params.userId;
     try{
@@ -39,6 +54,11 @@ const getMappingByUser = async (req,res) =>{
     }catch(err){console.error(err);}
 }
 
+/**
+ * create a mapping with new user
+ * @param {*} req 
+ * @param {*} res 
+ */
 const createMappingByUser = async (req,res) =>{
     const newMapping = req.body;
     try{

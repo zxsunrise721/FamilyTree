@@ -5,6 +5,13 @@ const FamilyMember = require('../db/FamilyMember');
 const MappingUserFamilies = require('../db/MappingUserFamilies');
 const User = require('../db/User');
 
+/**
+ * create a new family
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns response
+ */
 const createFamily = async (req, res, next) =>{
     try{
         console.log(req.body);
@@ -35,23 +42,15 @@ const createFamily = async (req, res, next) =>{
 
             
         }
-        process.close();
-
-        // console.log('family',family);
+        
         if(!!userId && !!family) {
-            console.log('1');
             const userId = req.body.userId;
-            console.log('userId',userId);
             newMapping ={ userId: userId, familyIds:[family._id.toString()]};
-            console.log('mapping input ',newMapping);
-
             const mappingProcess = new MappingUserFamilies();
             let map = await mappingProcess.newMapping(newMapping);
-            console.log('map:',map);
         }
-
+        process.close();
         
-
         let _message = 'Family is created,' + !!img ? 'Background image is uploaded':'No background image uploaded!';
         let _bgImg = !!img ? {name:!!imgname?imgname:img.name,mimetype:img.mimetype, size:img.size} : '';
         let _data = {family: family, bgImg:_bgImg,};
@@ -60,6 +59,11 @@ const createFamily = async (req, res, next) =>{
     }catch(err){console.log(err); res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get all families
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getFamilies = async (req, res) => {
     try{
         const process = new Family();
@@ -74,6 +78,11 @@ const getFamilies = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get all public families
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getFamiliesPublic = async (req, res) => {
     try{
         const process = new Family();
@@ -88,6 +97,12 @@ const getFamiliesPublic = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get families that belong to current user
+ * their include all public families
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getFamiliesByUser = async(req,res) =>{
     const userId = req.params.user;
     try{
@@ -116,6 +131,11 @@ const getFamiliesByUser = async(req,res) =>{
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get all members that belong to current family
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMemberByFamily = async (req, res) => {
     const familyId = req.params.familyId
     try{
@@ -131,6 +151,11 @@ const getMemberByFamily = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * get member with member id
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getMemberById = async (req, res) => {
     const memberId = req.params.memberId;
     try{
@@ -146,6 +171,11 @@ const getMemberById = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * create member in current family
+ * @param {*} req 
+ * @param {*} res 
+ */
 const createFamilyMember = async (req, res) => {
     try{
         let memberObj = {   familyId:req.body.familyId, 
@@ -181,6 +211,13 @@ const createFamilyMember = async (req, res) => {
     }catch(err){ res.status(500).json({ status:500, error:err}) };
 }
 
+/**
+ * process update image files
+ * @param {*} files 
+ * @param {*} familyId 
+ * @param {*} _id 
+ * @returns the image src
+ */
 function processUploadFile(files, familyId, _id){
     let src;
     let img = files.avatar;
@@ -196,9 +233,12 @@ function processUploadFile(files, familyId, _id){
     return src;
 }
 
+/**
+ * update member's information 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const updateFamilyMember = async (req, res) => {
-    // console.log('body',req.body);
-    // console.log('file',req.files);
     try{
         let memberObj = { _id: req.body._id, }
         if(!!req.body.memberName){memberObj = {...memberObj, memberName: req.body.memberName};}
