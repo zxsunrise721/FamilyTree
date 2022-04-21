@@ -36,6 +36,7 @@ It's final project on Concordia bootCamp.
     
 # directory:
 ## myapp (frontend):
+```
 .
 ├── node_modules
 ├── public
@@ -71,8 +72,9 @@ It's final project on Concordia bootCamp.
 │   └── UserContext.js
 ├── package-lock.json    
 └── package.json
-
+```
 ## server (backend):
+```
 .
 ├── node_modules
 ├── auth
@@ -105,3 +107,4 @@ It's final project on Concordia bootCamp.
 │             ├── female.png
 │             └── male.png
 └── uploads (this is temp folder, storage upload image)
+```
