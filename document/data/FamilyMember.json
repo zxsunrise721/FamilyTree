@@ -1,46 +1,148 @@
 [
-    {
-        name: "Zhū Yuánzhāng",
-        BirthToDeath: "(21 October 1328 – 24 June 1398)",
-        avatar:"",
-        profiles: "Common name: Hongwu Emperor,Reign:23 January 1368 – 24 June 1398, Temple name: Taizu",
-        relationsType: "root",
-        relationsWith: "",
+  {
+    "_id": { "$oid": "625ca392fdd70eedc7d1d68f" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Yuanzhang",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ca392fdd70eedc7d1d68fTaiZu.jpg",
+    "birth": "1328-10-21",
+    "death": "1398-06-24",
+    "profile": "Zhu Yuanzhang (Chinese: 朱元璋）  (21 October 1328 – 24 June 1398)。\r\nEra name:  The Hongwu Emperor. (洪武)\r\nCourtesy name Guorui (simplified Chinese: 国瑞; traditional Chinese: 國瑞), was the founding emperor of the Ming dynasty, \r\nReigning from 1368 to 1398.\r\nPosthumous name: Emperor Gāo (高皇帝)\r\nTemple name: Tàizǔ (太祖)",
+    "relationshipType": "Root",
+    "relationshipWith": "null",
+    "children": [
+      { "$oid": "625ca4a2fdd70eedc7d1d690" },
+      { "$oid": "625ca5d5fdd70eedc7d1d691" }
+    ]
+  },
+  {
+    "_id": { "$oid": "625ca4a2fdd70eedc7d1d690" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Biao",
+    "avatar": "",
+    "birth": "1355-10-10",
+    "death": "1392-05-17",
+    "profile": "Zhu Biao (simplified Chinese: 朱标; traditional Chinese: 朱標; 10 October 1355 – 17 May 1392).\r\nhe was the Hongwu Emperor's eldest son and crown prince of the Ming dynasty.\r\nCrown Prince Yiwen (懿文太子) by his father and Xingzong (興宗), Emperor Xiaokang (孝康皇帝) by his son.",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ca392fdd70eedc7d1d68f" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ca392fdd70eedc7d1d68f" },
+      "rsMemberName": "Zhu Yuanzhang"
     },
-
-    {
-        name: "Zhū Dì",
-        BirthToDeath: "(2 May 1360 – 12 August 1424)",
-        avatar:"",
-        profiles: "Common name: Yongle Emperor,Reign:17 July 1402 – 12 August 1424, Temple name: Tàizōng 太宗 and Chéngzǔ 成祖",
-        relationsType: "son",
-        relationsWith: "",
+    "children": [{ "$oid": "625ca6ddfdd70eedc7d1d692" }]
+  },
+  {
+    "_id": { "$oid": "625ca5d5fdd70eedc7d1d691" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Di ",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ca5d5fdd70eedc7d1d691yongle.jpg",
+    "birth": "1360-05-02",
+    "death": "1424-08-12",
+    "profile": "Zhu Di (Chinese: 朱棣; 2 May 1360 – 12 August 1424), Zhu Di was the fourth son of the Hongwu Emperor,He was originally enfeoffed as the Prince of Yan (燕王) in May 1370.\r\nReign: 17 July 1402 – 12 August 1424\r\nEra name: Yǒnglè 永樂\r\nPosthumous name: Emperor Wén 文皇帝\r\nTemple name: Tàizōng 太宗 and Chéngzǔ 成祖",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ca392fdd70eedc7d1d68f" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ca392fdd70eedc7d1d68f" },
+      "rsMemberName": "Zhu Yuanzhang"
     },
-
-    {
-        name: "Zhū Yǔnwén",
-        BirthToDeath: "(16 August 1378 – 29 May 1425)",
-        avatar:"",
-        profiles: "Common name: Jianwen Emperor,Reign: 30 June 1398 – 13 July 1402, Temple name: Huìzōng",
-        relationsType: "",
-        relationsWith: "",
+    "children": [{ "$oid": "625ca7d6fdd70eedc7d1d693" }]
+  },
+  {
+    "_id": { "$oid": "625ca6ddfdd70eedc7d1d692" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhū Yǔnwén",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ca6ddfdd70eedc7d1d692Jianwen_Emperor.jpg",
+    "birth": "1377-12-05",
+    "death": "1402-06-13",
+    "profile": "Zhu Yunwen (朱允炆).  (5 December 1377 – 13 July 1402) was the second Emperor of the Ming dynasty,\r\nEra name: Jianwen Emperor\r\nReign: 30 June 1398 – 13 July 1402\r\nPosthumous name: Emperor Ràng 讓皇帝\r\nTemple name:  Huìzōng 惠宗",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ca4a2fdd70eedc7d1d690" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ca4a2fdd70eedc7d1d690" },
+      "rsMemberName": "Zhu Biao"
+    }
+  },
+  {
+    "_id": { "$oid": "625ca7d6fdd70eedc7d1d693" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Gaochi",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ca7d6fdd70eedc7d1d693MingRenzong1.jpg",
+    "birth": "1378-08-16",
+    "death": "1425-05-29",
+    "profile": "Zhu Gaochi was born on 16 August 1378 and was educated by prominent Confucian tutors. He often acted as regent in Nanjing or Beijing during his father's northern military campaigns.\r\nEra name: Hongxi (洪熙) 1425\r\nReign: 7 September 1424 – 29 May 1425\r\nPosthumous name: Emperor Zhāo 昭皇帝\r\n",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ca5d5fdd70eedc7d1d691" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ca5d5fdd70eedc7d1d691" },
+      "rsMemberName": "Zhu Di "
     },
-
-    {
-        name: "Zhū Gāochì",
-        BirthToDeath: "(5 December 1377 – 13 July 1402)",
-        avatar:"",
-        profiles: "Common name: Hongxi Emperor,Reign: 7 September 1424 – 29 May 1425, Temple name: Rénzōng 仁宗",
-        relationsType: "",
-        relationsWith: "",
+    "newMember": {
+      "avatar": "/images/62589d7e1b6851e1928a63a9/625ca7d6fdd70eedc7d1d693MingRenzong1.jpg"
     },
-
-    {
-        name: "Zhū Zhānjī",
-        BirthToDeath: "(16 March 1399 – 31 January 1435)",
-        avatar:"",
-        profiles: "Common name: Xuande Emperor,Reign: 27 June 1425 – 31 January 1435, Temple name: Xuānzōng 宣宗",
-        relationsType: "",
-        relationsWith: "",
+    "children": [{ "$oid": "625cc9e944a262e93d836378" }]
+  },
+  {
+    "_id": { "$oid": "625cc9e944a262e93d836378" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Zhanji",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625cc9e944a262e93d836378xuande.jpg",
+    "birth": "1399-03-16",
+    "death": "1435-01-31",
+    "profile": "Zhu Zhanji (朱瞻基), was the fifth Emperor of the Ming dynasty,\r\nEra name:Xuande Emperor (宣德)\r\nreigned from 1425 to 1435\r\nPosthumous name: Emperor Zhāng 章皇帝\r\nTemple name  Xuānzōng 宣宗",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ca7d6fdd70eedc7d1d693" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ca7d6fdd70eedc7d1d693" },
+      "rsMemberName": "Zhu Gaochi"
     },
+    "children": [
+      { "$oid": "625ccf2644a262e93d836379" },
+      { "$oid": "625cd12f44a262e93d83637a" }
+    ]
+  },
+  {
+    "_id": { "$oid": "625ccf2644a262e93d836379" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Qizhen",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ccf2644a262e93d836379yingzong.jpg",
+    "birth": "1427-11-29",
+    "death": "1464-02-23",
+    "profile": "Zhu Qizhen (Chinese: 朱祁鎮; 29 November 1427 – 23 February 1464) \r\nEra name: Zhèngtǒng 正統 Tiānshùn天順\r\nReign: 7 February 1435 – 1 September 1449 / 11 February 1457 – 23 February 1464\r\nPosthumous name\t Emperor Ruì 睿皇帝\r\nTemple name[ Yīngzōng 英宗",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625cc9e944a262e93d836378" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625cc9e944a262e93d836378" },
+      "rsMemberName": "Zhu Zhanji"
+    },
+    "children": [{ "$oid": "625cd34c44a262e93d83637b" }]
+  },
+  {
+    "_id": { "$oid": "625cd12f44a262e93d83637a" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": "Zhu Qiyu",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625cd12f44a262e93d83637aJingtai.jpg",
+    "birth": "1428-09-21",
+    "death": "1457-03-14",
+    "profile": "Zhu Qiyu (21 September 1428 – 14 March 1457),was the seventh Emperor of the Ming dynasty The second son of the Xuande Emperor,\r\nEra name: Jǐngtài 景泰\r\nReign 22 September 1449 – 14 March 1457\r\nPosthumous name:Emperor Jǐng 景皇帝\r\nTemple name:Dàizōng 代宗\r\n",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625cc9e944a262e93d836378" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625cc9e944a262e93d836378" },
+      "rsMemberName": "Zhu Zhanji"
+    }
+  },
+  {
+    "_id": { "$oid": "625cd34c44a262e93d83637b" },
+    "familyId": { "$oid": "62589d7e1b6851e1928a63a9" },
+    "memberName": " Zhu Jianshen",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625cd34c44a262e93d83637bxianzong.jpg",
+    "birth": "1447-12-09",
+    "death": "1487-09-09",
+    "profile": " Zhu Jianshen 朱見深 9 December 1447 – 9 September 1487),was the ninth Emperor of the Ming dynasty\r\nEra name Chénghuà 成化\r\nreigned from 1464 to 1487.\r\nPosthumous name:\tEmperor Chún 純皇帝\r\nTemple name Xiànzōng憲宗",
+    "relationshipType": "Child",
+    "relationshipWith": { "$oid": "625ccf2644a262e93d836379" },
+    "relationship": {
+      "rsMemberId": { "$oid": "625ccf2644a262e93d836379" },
+      "rsMemberName": "Zhu Qizhen"
+    }
+  }
 ]

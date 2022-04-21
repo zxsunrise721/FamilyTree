@@ -1,4 +1,94 @@
 {
-    FamilyName : "List of emperors of the Ming dynasty"
-
+  "_id": { "$oid": "62589d7e1b6851e1928a63a9" },
+  "member": {
+    "id": { "$oid": "625ca392fdd70eedc7d1d68f" },
+    "name": "Zhu Yuanzhang",
+    "avatar": "/images/62589d7e1b6851e1928a63a9/625ca392fdd70eedc7d1d68fTaiZu.jpg",
+    "birth": "1328-10-21",
+    "death": "1398-06-24",
+    "children": [
+      {
+        "member": {
+          "id": { "$oid": "625ca4a2fdd70eedc7d1d690" },
+          "name": "Zhu Biao",
+          "avatar": "",
+          "birth": "1355-10-10",
+          "death": "1392-05-17",
+          "children": [
+            {
+              "member": {
+                "id": { "$oid": "625ca6ddfdd70eedc7d1d692" },
+                "name": "Zhū Yǔnwén",
+                "avatar": "/images/62589d7e1b6851e1928a63a9/625ca6ddfdd70eedc7d1d692Jianwen_Emperor.jpg",
+                "birth": "1377-12-05",
+                "death": "1402-06-13"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "member": {
+          "id": { "$oid": "625ca5d5fdd70eedc7d1d691" },
+          "name": "Zhu Di ",
+          "avatar": "/images/62589d7e1b6851e1928a63a9/625ca5d5fdd70eedc7d1d691yongle.jpg",
+          "birth": "1360-05-02",
+          "death": "1424-08-12",
+          "children": [
+            {
+              "member": {
+                "id": { "$oid": "625ca7d6fdd70eedc7d1d693" },
+                "name": "Zhu Gaochi",
+                "avatar": "/images/62589d7e1b6851e1928a63a9/625ca7d6fdd70eedc7d1d693MingRenzong1.jpg",
+                "birth": "1378-08-16",
+                "death": "1425-05-29",
+                "children": [
+                  {
+                    "member": {
+                      "id": { "$oid": "625cc9e944a262e93d836378" },
+                      "name": "Zhu Zhanji",
+                      "avatar": "/images/62589d7e1b6851e1928a63a9/625cc9e944a262e93d836378xuande.jpg",
+                      "birth": "1399-03-16",
+                      "death": "1435-01-31",
+                      "children": [
+                        {
+                          "member": {
+                            "id": { "$oid": "625ccf2644a262e93d836379" },
+                            "name": "Zhu Qizhen",
+                            "avatar": "/images/62589d7e1b6851e1928a63a9/625ccf2644a262e93d836379yingzong.jpg",
+                            "birth": "1427-11-29",
+                            "death": "1464-02-23",
+                            "children": [
+                              {
+                                "member": {
+                                  "id": { "$oid": "625cd34c44a262e93d83637b" },
+                                  "name": " Zhu Jianshen",
+                                  "avatar": "/images/62589d7e1b6851e1928a63a9/625cd34c44a262e93d83637bxianzong.jpg",
+                                  "birth": "1447-12-09",
+                                  "death": "1487-09-09"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "member": {
+                            "id": { "$oid": "625cd12f44a262e93d83637a" },
+                            "name": "Zhu Qiyu",
+                            "avatar": "/images/62589d7e1b6851e1928a63a9/625cd12f44a262e93d83637aJingtai.jpg",
+                            "birth": "1428-09-21",
+                            "death": "1457-03-14"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
 }
